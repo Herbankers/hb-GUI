@@ -1,14 +1,13 @@
-from PyQt5 import *
-from scanrfid import *
-
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_main(object):
-    def openNext(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_scanrfid()
-        self.ui.setupUi(self.window)
-        self.window.showMaximized()
+    def startLogin(self):
+        from login1 import Ui_login1
+        self.login1 = QtWidgets.QMainWindow()
+        self.ui = Ui_login1()
+        self.ui.setupUi(self.login1)
         main.hide()
+        self.login1.showMaximized()
 
     def setupUi(self, main):
         screen = app.primaryScreen()
@@ -21,7 +20,7 @@ class Ui_main(object):
         self.centralwidget = QtWidgets.QWidget(main)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect((width / 3), 50, 600, 70))
+        self.label.setGeometry(QtCore.QRect((width/3), 50, 600, 70))
         font = QtGui.QFont()
         font.setFamily("Broadway")
         font.setPointSize(23)
@@ -41,22 +40,19 @@ class Ui_main(object):
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(10, 910, 200, 50))
+        self.pushButton.setGeometry(QtCore.QRect(10, 940, 200, 50))
         self.pushButton.setObjectName("pushButton")
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(1810, 910, 100, 50))
+        self.pushButton_2.setGeometry(QtCore.QRect(1810, 940, 100, 50))
         self.pushButton_2.setObjectName("pushButton_2")
 
-        self.pushButton_2.clicked.connect(self.openNext)
+        #goto next login page
+        self.pushButton_2.clicked.connect(self.startLogin)
 
+        self.helpButton = QtWidgets.QPushButton(self.centralwidget)
+        self.helpButton.setGeometry(QtCore.QRect(0, 0, 100, 50))
+        self.helpButton.setObjectName("helpButton")
         main.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(main)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 620, 22))
-        self.menubar.setObjectName("menubar")
-        self.menuHelp = QtWidgets.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
-        main.setMenuBar(self.menubar)
-        self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(main)
         QtCore.QMetaObject.connectSlotsByName(main)
@@ -64,19 +60,16 @@ class Ui_main(object):
     def retranslateUi(self, main):
         _translate = QtCore.QCoreApplication.translate
         main.setWindowTitle(_translate("main", "Welkom"))
-        self.label.setText(_translate("main", "Welkom bij de HerBank"))
+        self.label.setText(_translate("main", "Welkom bij de Herbank"))
         self.label_2.setText(_translate("main", "Druk op [1] om in te loggen"))
-        self.label_3.setText(
-            _translate("main", "Heb je nog geen account bij ons, druk op [2]")
-        )
+        self.label_3.setText(_translate("main", "Heb je nog geen account bij ons, druk op [2]"))
         self.pushButton.setText(_translate("main", "Aanmelden [2]"))
         self.pushButton_2.setText(_translate("main", "Start [1]"))
-        self.menuHelp.setTitle(_translate("main", "Help"))
+        self.helpButton.setText(_translate("main", "Help [3]"))
 
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     main = QtWidgets.QMainWindow()
     ui = Ui_main()
