@@ -2,8 +2,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_login2(object):
-    def clear(self,main):#function to clear the password field
-        self.lineEdit.setText("")
+    def login(self):
+        from menu import Ui_mainMenu
+        self.menu = QtWidgets.QMainWindow()
+        self.ui = Ui_mainMenu()
+        self.ui.setupUi(self.menu)
+        main.hide()
+        self.menu.showMaximized()
     
     def setupUi(self, main):
         # screen = app.primaryScreen()
@@ -29,13 +34,14 @@ class Ui_login2(object):
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
         self.loginButton = QtWidgets.QPushButton(self.centralwidget)
-        self.loginButton.setGeometry(QtCore.QRect(1810, 940, 100, 50))
+        self.loginButton.setGeometry(QtCore.QRect(1810, 940, 150, 50))
         self.loginButton.setObjectName("loginButton")
+        #when user click button run login function
+        self.loginButton.clicked.connect(self.login)
+
         self.clearButton = QtWidgets.QPushButton(self.centralwidget)
         self.clearButton.setGeometry(QtCore.QRect((width/3)+240, 400, 100, 30))
         self.clearButton.setObjectName("clearButton")
-        # clear the password
-        self.clearButton.clicked.connect(self.clear)
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setGeometry(QtCore.QRect((width/3)+100, 400, 115, 30))
         self.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -52,7 +58,7 @@ class Ui_login2(object):
         _translate = QtCore.QCoreApplication.translate
         main.setWindowTitle(_translate("main", "Welkom"))
         self.label.setText(_translate("main", "Voer uw 4-cijferige pincode in"))
-        self.label_2.setText(_translate("main", "PIN:"))
+        self.label_2.setText(_translate("main", "Pincode:"))
         self.loginButton.setText(_translate("main", "Login [1]"))
         self.helpButton.setText(_translate("main", "Help [2]"))
         self.clearButton.setText(_translate("main", "wissen [3]"))
