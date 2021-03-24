@@ -49,6 +49,10 @@ class Ui_main(object):
         #goto next login page
         self.pushButton_2.clicked.connect(self.startLogin)
 
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(1770, 0, 150, 50))
+        self.pushButton_3.setObjectName("pushButton_3")
+
         self.helpButton = QtWidgets.QPushButton(self.centralwidget)
         self.helpButton.setGeometry(QtCore.QRect(0, 0, 100, 50))
         self.helpButton.setObjectName("helpButton")
@@ -65,6 +69,7 @@ class Ui_main(object):
         self.label_3.setText(_translate("main", "Heb je nog geen account bij ons, druk op [2]"))
         self.pushButton.setText(_translate("main", "Aanmelden [2]"))
         self.pushButton_2.setText(_translate("main", "Start [1]"))
+        self.pushButton_3.setText(_translate("main", "Taal/Language"))
         self.helpButton.setText(_translate("main", "Help [3]"))
 
 
