@@ -161,7 +161,7 @@ def main(argv):
     if serial_port == '':
         login(hbp, None)
     else:
-        arduino = serial.Serial('/dev/tty.usbmodem14201', 9600, timeout=.1)
+        arduino = serial.Serial(serial_port, 9600, timeout=.1)
         login(hbp, arduino)
 
 if __name__ == '__main__':
