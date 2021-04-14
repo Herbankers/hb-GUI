@@ -10,7 +10,7 @@ class HBP:
 
     # Constants
     HBP_ERROR_MAX =         10
-    HBP_LENGTH_MAX =        32768
+    HBP_LENGTH_MAX =        1024
     HBP_IBAN_MIN =          9
     HBP_IBAN_MAX =          34
     HBP_PIN_MIN =           4
@@ -49,7 +49,7 @@ class HBP:
 
         self.sock.connect((host, port))
 
-    def send(self, request_type, data):
+    def _send(self, request_type, data):
         packed = msgpack.packb(data, use_bin_type=True)
 
         header = bytearray()
@@ -75,7 +75,7 @@ class HBP:
         self.sock.sendall(header)
         self.sock.sendall(packed)
 
-    def receive(self):
+    def _receive(self):
         # wait for the header to arrive
         header = self.sock.recv(self.HBP_HEADER_LENGTH)
 
@@ -99,10 +99,10 @@ class HBP:
         if reply_type == self.HBP_REP_ERROR:
             return (reply_type, 0)
         else:
-            return (reply_type, {msgpack.unpackb(data, raw=False)})
+            return (reply_type, msgpack.unpackb(data, raw=False))
 
     def replyType(self, reply_type):
-        # TODO put in a list or something but i was lazy
+        # TODO should put this in a list or something but I was lazy
         if reply_type == self.HBP_REP_LOGIN:
             return 'HBP_REP_LOGIN'
         elif reply_type == self.HBP_REP_TERMINATED:
@@ -117,5 +117,49 @@ class HBP:
             return 'HBP_REP_ERROR'
 
     def request(self, request_type, data):
-        self.send(request_type, data)
-        return self.receive()
+        self._send(request_type, data)
+        return self._receive()
+
+    # FIXME all these functions below can be written way more compactly, but again, I'm lazy
+
+    def login(self, card_id, iban, pin):
+        # send a login request to the server
+        request = [card_id, iban, pin]
+        reply = self.request(self.HBP_REQ_LOGIN, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_LOGIN:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the login status if successful
+        return reply[1]
+
+    def logout(self):
+        # send a logout request to the server
+        request = []
+        reply = self.request(self.HBP_REQ_LOGOUT, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_TERMINATED:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the logout reason otherwise (which should always be HBP_TERM_LOGOUT)
+        return reply[1]
+
+    def info(self):
+        # send an info request to the server
+        request = []
+        reply = self.request(self.HBP_REQ_INFO, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_INFO:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the first and last name in an array if successful
+        return reply[1]
