@@ -1,32 +1,15 @@
 import sys
-import serial, time
-import serial.tools.list_ports
 from  PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic import loadUi
 
 name="Eigenaar"
 
-ports = list(serial.tools.list_ports.comports())
-for p in ports:
-    print(p)
-
-arduino = serial.Serial(p[0],9600,timeout=.1)
-print("connected to: " + arduino.portstr)
-
 class Start(QMainWindow):
     def __init__(self):
         super(Start,self).__init__()
         loadUi("start.ui",self)
-        while(True):
-            if(arduino.in_waiting > 0):
-                # #[:-2] removes last 2 characters which in this case will be the newline
-                data = arduino.readline()[:-2]
-                #decode the data
-                decoded_data = str(data,'utf-8')
-                if(decoded_data[0:1] == '1'):
-                    self.gotoLogin1
-        #self.pushButton_2.clicked.connect(self.gotoLogin1)
+        self.pushButton_2.clicked.connect(self.gotoLogin1)
 
     def gotoLogin1(self):
         login1= Login1()
@@ -89,8 +72,4 @@ startWindow=Start()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(startWindow)
 widget.showMaximized()
-
-try:
-    sys.exit(app.exec_())
-except:
-    print("Exiting")
+sys.exit(app.exec_())
