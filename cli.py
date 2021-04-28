@@ -1,13 +1,161 @@
-import time
-import sys
 import getopt
 import getpass
+import os
+import sys
+import time
 
 from hbp import *
 
-def mainmenu(hbp, arduino):
+hbp = None
+arduino = None
+
+def clear():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
+
+def donate():
     choice = ''
 
+    clear()
+    print('')
+    print(f'-[ Hoeveel geld wilt u doneren aan Bill Gates? ]-')
+    print('')
+    print('Help Bill Gates met de ontwikkeling van het corona virus.')
+    print('')
+    print('[1] EUR 2')
+    print('[2] EUR 5')
+    print('[3] EUR 10')
+    print('[4] Handmatige invoer')
+    print('[5] Annuleren')
+
+    if arduino == None:
+        choice = input('> ')
+        try:
+            int(choice)
+        except ValueError:
+            return True
+    else:
+        while True:
+            data = arduino.readline()[:-2]
+            decoded_data = str(data, 'utf-8')
+
+            if decoded_data[0:1] == 'K':
+                choice = decoded_data[1:]
+                break
+
+    if choice == '1':
+        amount = 2
+    elif choice == '2':
+        amount = 5
+    elif choice == '3':
+        amount = 10
+    elif choice == '4':
+        # TODO
+        print('not yet implemented')
+        sleep.time(5)
+        return True
+    elif choice == '5':
+        return False
+    else:
+        print('Verkeerde keuze')
+        time.sleep(2)
+        return True
+
+    reply = hbp.transfer('NL50BILL000000', amount * 100);
+
+    if reply == hbp.HBP_TRANSFER_SUCCESS:
+        clear()
+        print('')
+        print('Bedankt voor uw donatie!')
+        time.sleep(3)
+    elif reply == hbp.HBP_TRANSFER_PROCESSING:
+        clear()
+        print('')
+        print('De transactie is nog in verwerking...')
+        print('In ieder geval alvast bedankt voor uw donatie!')
+        time.sleep(3)
+    elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
+        clear()
+        print('')
+        print('Uw saldo is ontoereikend')
+        time.sleep(2)
+    else:
+        print(reply)
+        time.sleep(2)
+
+def withdraw():
+    choice = ''
+
+    clear()
+    print('')
+    print(f'-[ Hoeveel geld wilt u opnemen? ]-')
+    print('')
+    print('[1] EUR 10')
+    print('[2] EUR 20')
+    print('[3] EUR 50')
+    print('[4] Handmatige invoer')
+    print('[5] Annuleren')
+
+    if arduino == None:
+        choice = input('> ')
+        try:
+            int(choice)
+        except ValueError:
+            return True
+    else:
+        while True:
+            data = arduino.readline()[:-2]
+            decoded_data = str(data, 'utf-8')
+
+            if decoded_data[0:1] == 'K':
+                choice = decoded_data[1:]
+                break
+
+    if choice == '1':
+        amount = 10
+    elif choice == '2':
+        amount = 20
+    elif choice == '3':
+        amount = 50
+    elif choice == '4':
+        # TODO
+        print('not yet implemented')
+        sleep.time(5)
+        return True
+    elif choice == '5':
+        return False
+    else:
+        print('Verkeerde keuze')
+        time.sleep(2)
+        return True
+
+    reply = hbp.transfer('', amount * 100);
+
+    if reply == hbp.HBP_TRANSFER_SUCCESS:
+        clear()
+        print('')
+        print('Neem uw geld uit')
+        time.sleep(3)
+    elif reply == hbp.HBP_TRANSFER_PROCESSING:
+        clear()
+        print('')
+        print('Neem uw geld uit (nog aan het verwerken)')
+        time.sleep(3)
+    elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
+        clear()
+        print('')
+        print('Uw saldo is ontoereikend')
+        time.sleep(2)
+    else:
+        print(reply)
+        time.sleep(2)
+
+def mainmenu():
+    choice = ''
+
+    clear()
     print('')
 
     # retrieve the name of the user
@@ -29,7 +177,7 @@ def mainmenu(hbp, arduino):
         try:
             int(choice)
         except ValueError:
-            mainmenu(hbp, arduino)
+            return True
     else:
         while True:
             data = arduino.readline()[:-2]
@@ -40,29 +188,45 @@ def mainmenu(hbp, arduino):
                 break
 
     if choice == '1':
-        print('Not Yet Implemented')
-        mainmenu(hbp, arduino)
+        # Geld opnemen
+        while withdraw():
+            pass
     elif choice == '2':
-        print('Not Yet Implemented')
-        mainmenu(hbp, arduino)
+        # Geld doneren
+        while donate():
+            pass
     elif choice == '3':
-        print('Not Yet Implemented')
-        mainmenu(hbp, arduino)
+        # Saldo raadplegen
+        clear()
+        print('')
+        print(f'Uw saldo is: EUR {hbp.balance()}')
+        input('Druk op een toets om terug te keren naar het hoofdmenu')
     elif choice == '4':
+        # Uitloggen
+        name = hbp.info()
+
         # we can check the reply, but this is really not needed, as it basically always succeeds
         hbp.logout()
-        print(f'Tot ziens {name[0]} {name[1]}!')
 
-        login(hbp, arduino)
+        clear()
+        print('')
+        print(f'Graag tot ziens!')
+
+        time.sleep(3)
+
+        return False
     else:
         print('Verkeerde keuze')
-        mainmenu(hbp, arduino)
+        time.sleep(2)
 
-def login(hbp, arduino):
+    return True
+
+def login():
     card_id = ''
     iban = ''
     pin = ''
 
+    clear()
     print('')
 
     if arduino == None:
@@ -70,12 +234,14 @@ def login(hbp, arduino):
         iban = 'NL35HERB2932749274'
 
         pin = getpass.getpass('PIN: ')
-        pin = input('PIN: ')
         try:
             int(pin)
         except ValueError:
+            clear()
+            print('')
             print('Foutieve PIN')
-            login(hbp, arduino)
+            time.sleep(3)
+            return
     else:
         # Get the card ID from the card reader
         print('Houd uw kaart voor de lezer')
@@ -110,22 +276,31 @@ def login(hbp, arduino):
     reply = hbp.login(card_id, iban, pin)
 
     if reply == hbp.HBP_LOGIN_GRANTED:
-        mainmenu(hbp, arduino)
+        logged_in = True
+        while logged_in:
+            logged_in = mainmenu()
     elif reply == hbp.HBP_LOGIN_DENIED:
+        clear()
+        print('')
         print('Foutieve PIN')
-        login(hbp, arduino)
+        time.sleep(2)
     elif reply == hbp.HBP_LOGIN_BLOCKED:
+        clear()
+        print('')
         print('Kaart geblokkeerd')
-        login(hbp, arduino)
+        time.sleep(2)
     else:
         print(reply)
-        login(hbp, arduino)
+        time.sleep(2)
 
 # print usage information
 def help():
     print('usage: cli.py [-h] [-s | --serial-port=] [-h | --host=] [-p | --port=]')
 
 def main(argv):
+    global hbp
+    global arduino
+
     # parse command line options
     try:
         opts, args = getopt.getopt(argv, 'hs:h:p:', [ 'serial-port=', 'host=', 'port=' ])
@@ -154,11 +329,11 @@ def main(argv):
     hbp = HBP(host, port)
     print(f'Connected to Herbank Server @ {host}:{port}')
 
-    if serial_port == '':
-        login(hbp, None)
-    else:
+    if serial_port != '':
         arduino = serial.Serial(serial_port, 9600, timeout=.1)
-        login(hbp, arduino)
+
+    while True:
+        login()
 
 if __name__ == '__main__':
     main(sys.argv[1:])

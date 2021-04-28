@@ -3,46 +3,51 @@ import serial
 import socket
 
 class HBP:
-    HBP_VERSION =           1
-    HBP_MAGIC =             0x4B9A208E
-    HBP_PORT =              8420
-    HBP_HEADER_LENGTH =     8
+    HBP_VERSION                     = 1
+    HBP_MAGIC                       = 0x4B9A208E
+    HBP_PORT                        = 8420
+    HBP_HEADER_LENGTH               = 8
 
     # Constants
-    HBP_ERROR_MAX =         10
-    HBP_LENGTH_MAX =        1024
-    HBP_IBAN_MIN =          9
-    HBP_IBAN_MAX =          34
-    HBP_PIN_MIN =           4
-    HBP_PIN_MAX =           12
-    HBP_PINTRY_MAX =        3
-    HBP_TIMEOUT =           (5 * 60)
-    HBP_CID_MAX =           12
+    HBP_ERROR_MAX                   = 10
+    HBP_LENGTH_MAX                  = 1024
+    HBP_IBAN_MIN                    = 9
+    HBP_IBAN_MAX                    = 34
+    HBP_PIN_MIN                     = 4
+    HBP_PIN_MAX                     = 12
+    HBP_PINTRY_MAX                  = 3
+    HBP_TIMEOUT                     = (5 * 60)
+    HBP_CID_MAX                     = 12
 
     # Types of requests
-    HBP_REQ_LOGIN =         0
-    HBP_REQ_LOGOUT =        1
-    HBP_REQ_INFO =          2
-    HBP_REQ_BALANCE =       3
-    HBP_REQ_TRANSFER =      4
+    HBP_REQ_LOGIN                   = 0
+    HBP_REQ_LOGOUT                  = 1
+    HBP_REQ_INFO                    = 2
+    HBP_REQ_BALANCE                 = 3
+    HBP_REQ_TRANSFER                = 4
 
     # Types of replies
-    HBP_REP_LOGIN =         128
-    HBP_REP_TERMINATED =    129
-    HBP_REP_INFO =          130
-    HBP_REP_BALANCE =       131
-    HBP_REP_TRANSFER =      132
-    HBP_REP_ERROR =         133
+    HBP_REP_LOGIN                   = 128
+    HBP_REP_TERMINATED              = 129
+    HBP_REP_INFO                    = 130
+    HBP_REP_BALANCE                 = 131
+    HBP_REP_TRANSFER                = 132
+    HBP_REP_ERROR                   = 133
 
     # Indicates whether the login failed or succeeded
-    HBP_LOGIN_GRANTED =     0
-    HBP_LOGIN_DENIED =      1
-    HBP_LOGIN_BLOCKED =     2
+    HBP_LOGIN_GRANTED               = 0
+    HBP_LOGIN_DENIED                = 1
+    HBP_LOGIN_BLOCKED               = 2
 
     # Indicates why the session has ended/the server will disconnect
-    HBP_TERM_LOGOUT =       0
-    HBP_TERM_EXPIRED =      1
-    HBP_TERM_CLOSED =       2
+    HBP_TERM_LOGOUT                 = 0
+    HBP_TERM_EXPIRED                = 1
+    HBP_TERM_CLOSED                 = 2
+
+    # Result status of a transfer
+    HBP_TRANSFER_SUCCESS            = 0
+    HBP_TRANSFER_PROCESSING         = 1
+    HBP_TRANSFER_INSUFFICIENT_FUNDS = 2
 
     def __init__(self, host, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -127,7 +132,7 @@ class HBP:
         request = [card_id, iban, pin]
         reply = self.request(self.HBP_REQ_LOGIN, request)
 
-        # check if the server's reply
+        # check the server's reply
         reply_type = reply[0]
         if reply_type != self.HBP_REP_LOGIN:
             # return the type of reply that was received instead of the expected one
@@ -141,7 +146,7 @@ class HBP:
         request = []
         reply = self.request(self.HBP_REQ_LOGOUT, request)
 
-        # check if the server's reply
+        # check the server's reply
         reply_type = reply[0]
         if reply_type != self.HBP_REP_TERMINATED:
             # return the type of reply that was received instead of the expected one
@@ -155,9 +160,37 @@ class HBP:
         request = []
         reply = self.request(self.HBP_REQ_INFO, request)
 
-        # check if the server's reply
+        # check the server's reply
         reply_type = reply[0]
         if reply_type != self.HBP_REP_INFO:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the first and last name in an array if successful
+        return reply[1]
+
+    def balance(self):
+        # send an info request to the server
+        request = []
+        reply = self.request(self.HBP_REQ_BALANCE, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_BALANCE:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the first and last name in an array if successful
+        return reply[1]
+
+    def transfer(self, iban, amount):
+        # send a transfer request to the server
+        request = [iban, amount]
+        reply = self.request(self.HBP_REQ_TRANSFER, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_TRANSFER:
             # return the type of reply that was received instead of the expected one
             return self.replyType(reply_type)
 
