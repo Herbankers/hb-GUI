@@ -28,7 +28,7 @@ def donate():
     print('[2] EUR 5')
     print('[3] EUR 10')
     print('[4] Handmatige invoer')
-    print('[5] Annuleren')
+    print('[5] Afbreken')
 
     if arduino == None:
         choice = input('> ')
@@ -59,8 +59,6 @@ def donate():
     elif choice == '5':
         return False
     else:
-        print('Verkeerde keuze')
-        time.sleep(2)
         return True
 
     reply = hbp.transfer('NL50BILL000000', amount * 100);
@@ -96,7 +94,7 @@ def withdraw():
     print('[2] EUR 20')
     print('[3] EUR 50')
     print('[4] Handmatige invoer')
-    print('[5] Annuleren')
+    print('[5] Afbreken')
 
     if arduino == None:
         choice = input('> ')
@@ -127,8 +125,6 @@ def withdraw():
     elif choice == '5':
         return False
     else:
-        print('Verkeerde keuze')
-        time.sleep(2)
         return True
 
     reply = hbp.transfer('', amount * 100);
@@ -151,6 +147,16 @@ def withdraw():
     else:
         print(reply)
         time.sleep(2)
+
+def logout():
+    # we can check the reply, but this is really not needed, as it basically always succeeds
+    hbp.logout()
+
+    clear()
+    print('')
+    print(f'Graag tot ziens!')
+
+    time.sleep(3)
 
 def mainmenu():
     choice = ''
@@ -191,33 +197,37 @@ def mainmenu():
         # Geld opnemen
         while withdraw():
             pass
+
+        logout()
+        return False
     elif choice == '2':
         # Geld doneren
         while donate():
             pass
+
+        logout()
+        return False
     elif choice == '3':
         # Saldo raadplegen
         clear()
         print('')
         print(f'Uw saldo is: EUR {hbp.balance()}')
-        input('Druk op een toets om terug te keren naar het hoofdmenu')
-    elif choice == '4':
-        # Uitloggen
-        name = hbp.info()
 
-        # we can check the reply, but this is really not needed, as it basically always succeeds
-        hbp.logout()
-
-        clear()
         print('')
-        print(f'Graag tot ziens!')
+        print('Druk op een toets om terug te keren naar het hoofdmenu')
 
-        time.sleep(3)
+        if arduino == None:
+            choice = input('')
+        else:
+            while True:
+                data = arduino.readline()[:-2]
+                decoded_data = str(data, 'utf-8')
 
+                if decoded_data[0:1] == 'K':
+                    break
+    elif choice == '4':
+        logout()
         return False
-    else:
-        print('Verkeerde keuze')
-        time.sleep(2)
 
     return True
 
@@ -239,12 +249,12 @@ def login():
         except ValueError:
             clear()
             print('')
-            print('Foutieve PIN')
+            print('Onjuiste PIN')
             time.sleep(3)
             return
     else:
         # Get the card ID from the card reader
-        print('Houd uw kaart voor de lezer')
+        print('Houdt uw bankpas voor lezer om te beginnen')
         while True:
             data = arduino.readline()[:-2]
             decoded_data = str(data, 'utf-8')
@@ -252,13 +262,16 @@ def login():
             if decoded_data[0:1] == 'U':
                 card_id = decoded_data[1:]
                 break
-        print(f'Kaart ID: {card_id}')
+        #print(f'Kaart ID: {card_id}')
 
         # TODO should get this from the card too
         iban = 'NL35HERB2932749274'
-        print(f'IBAN: {iban}')
+        #print(f'IBAN: {iban}')
+
+        clear()
 
         # Get the PIN input from the keypad
+        print('')
         print('PIN: ', end='', flush=True)
         while True:
             data = arduino.readline()[:-2]
@@ -267,7 +280,8 @@ def login():
             if decoded_data[0:1] == 'K':
                 key = decoded_data[1:]
                 pin += key
-                print(key, end='', flush=True)
+                #print(key, end='', flush=True)
+                print('•', end='', flush=True)
 
                 if len(pin) == 4:
                     break
@@ -282,7 +296,7 @@ def login():
     elif reply == hbp.HBP_LOGIN_DENIED:
         clear()
         print('')
-        print('Foutieve PIN')
+        print('Onjuiste PIN')
         time.sleep(2)
     elif reply == hbp.HBP_LOGIN_BLOCKED:
         clear()
