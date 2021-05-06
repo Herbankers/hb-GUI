@@ -16,27 +16,35 @@
     <height>1034</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>15</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>Start</string>
+   <string>Welkom</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(249, 166, 0);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>500</x>
+      <x>450</x>
       <y>90</y>
-      <width>800</width>
-      <height>51</height>
+      <width>1011</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Broadway</family>
-      <pointsize>23</pointsize>
+      <pointsize>40</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Welkom bij de Herbank</string>
+     <string>Welkom bij INGrid</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -45,65 +53,20 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>400</y>
-      <width>600</width>
-      <height>50</height>
+      <x>660</x>
+      <y>410</y>
+      <width>681</width>
+      <height>201</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Calibri</family>
-      <pointsize>23</pointsize>
+      <pointsize>30</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Druk op start [1] om in te loggen</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>500</y>
-      <width>600</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Calibri</family>
-      <pointsize>15</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Heb je nog geen account bij ons, druk op [2]</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>940</y>
-      <width>150</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Aanmelden [2]</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>1800</x>
-      <y>940</y>
-      <width>100</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Start [1]</string>
+     <string>Scan uw kaart bij de scanner</string>
     </property>
    </widget>
    <widget class="QPushButton" name="helpButton">
@@ -115,18 +78,31 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>Help [3]</string>
+     <string>Help [2]</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>1760</x>
-      <y>0</y>
-      <width>151</width>
-      <height>41</height>
+      <x>1730</x>
+      <y>5</y>
+      <width>175</width>
+      <height>50</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <item>
      <property name="text">
@@ -143,6 +119,44 @@
       <string>Deutsch / Duits</string>
      </property>
     </item>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>690</y>
+      <width>1041</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Calibri</family>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startButton">
+    <property name="geometry">
+     <rect>
+      <x>1710</x>
+      <y>940</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Verder</string>
+    </property>
    </widget>
   </widget>
  </widget>
