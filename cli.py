@@ -240,7 +240,7 @@ def login():
     print('')
 
     if arduino == None:
-        card_id = '1223'
+        card_id = 'EBA8001B'
         iban = 'NL35HERB2932749274'
 
         pin = getpass.getpass('PIN: ')
