@@ -317,7 +317,7 @@ def main(argv):
 
     # parse command line options
     try:
-        opts, args = getopt.getopt(argv, 'hs:h:p:', [ 'serial-port=', 'host=', 'port=' ])
+        opts, args = getopt.getopt(argv, '?s:h:p:', [ 'serial-port=', 'host=', 'port=' ])
     except getopt.GetoptError:
         help()
         sys.exit(1)
@@ -329,7 +329,7 @@ def main(argv):
     port = 8420
 
     for opt, arg in opts:
-        if opt == '-h':
+        if opt == '-?':
             help()
             sys.exit(0)
         elif opt in ('-s', '--serial-port'):
