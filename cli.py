@@ -244,6 +244,9 @@ def login():
         iban = 'NL35HERB2932749274'
 
         pin = getpass.getpass('PIN: ')
+        if pin == '':
+            hbp.sock.close()
+            exit(0)
         try:
             int(pin)
         except ValueError:
