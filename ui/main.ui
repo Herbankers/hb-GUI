@@ -41,18 +41,14 @@ QLabel {
 #pinText,
 #withdrawText,
 #donateText,
-#balanceText {
+#balanceText,
+#name {
 	padding: 32px;
 }
 
 #pin {
 	font-family: &quot;Fira Mono&quot;, &quot;DejaVu Sans Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;, Monaco, &quot;Lucida Console&quot; monospace !important;
 	font-weight: normal;
-}
-
-#name {
-	padding-top: 16px;
-	padding-left: 16px;
 }
 
 QPushButton {
@@ -138,7 +134,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -304,7 +300,6 @@ QPushButton:pressed {
          <widget class="QLabel" name="pin">
           <property name="font">
            <font>
-            <family>Fira Mono</family>
             <pointsize>72</pointsize>
             <bold>false</bold>
            </font>
