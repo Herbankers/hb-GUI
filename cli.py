@@ -343,7 +343,11 @@ def main(argv):
             port = arg
 
     print('Copyright (C) 2021 Herbank CLI v1.0')
-    hbp = HBP(host, port)
+    try:
+        hbp = HBP(host, port)
+    except ConnectionRefusedError:
+        print(f'Failed to connect to {host}:{port}')
+        exit(1)
     print(f'Connected to Herbank Server @ {host}:{port}')
 
     if serial_port != '':

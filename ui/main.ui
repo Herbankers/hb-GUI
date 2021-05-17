@@ -38,6 +38,18 @@ QLabel {
 	background-color: #BF360C;
 }
 
+#pinText,
+#withdrawText,
+#donateText,
+#balanceText {
+	padding: 32px;
+}
+
+#pin {
+	font-family: &quot;Fira Mono&quot;, &quot;DejaVu Sans Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;, Monaco, &quot;Lucida Console&quot; monospace !important;
+	font-weight: normal;
+}
+
 #name {
 	padding-top: 16px;
 	padding-left: 16px;
@@ -126,9 +138,9 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
-      <widget class="QWidget" name="homePage">
+      <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <property name="leftMargin">
          <number>0</number>
@@ -213,9 +225,6 @@ QPushButton:pressed {
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
-            <property name="margin">
-             <number>24</number>
-            </property>
            </widget>
           </item>
           <item>
@@ -289,21 +298,19 @@ QPushButton:pressed {
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <property name="margin">
-           <number>24</number>
-          </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="pin">
           <property name="font">
            <font>
+            <family>Fira Mono</family>
             <pointsize>72</pointsize>
             <bold>false</bold>
            </font>
           </property>
           <property name="text">
-           <string>••••</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -348,7 +355,7 @@ QPushButton:pressed {
            </font>
           </property>
           <property name="text">
-           <string>Welkom!</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -558,9 +565,6 @@ QPushButton:pressed {
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <property name="margin">
-           <number>24</number>
-          </property>
          </widget>
         </item>
         <item>
@@ -741,9 +745,6 @@ QPushButton:pressed {
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <property name="margin">
-           <number>24</number>
-          </property>
          </widget>
         </item>
         <item>
@@ -880,7 +881,7 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="balance_2">
+         <widget class="QLabel" name="balanceAmount">
           <property name="font">
            <font>
             <pointsize>72</pointsize>
@@ -888,7 +889,7 @@ QPushButton:pressed {
            </font>
           </property>
           <property name="text">
-           <string>0 EUR</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -942,6 +943,26 @@ QPushButton:pressed {
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="resultPage">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QLabel" name="resultText">
+          <property name="font">
+           <font>
+            <pointsize>42</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
