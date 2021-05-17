@@ -1,58 +1,65 @@
 import msgpack
+import serial
 import socket
-import time
-
-host = '127.0.0.1'
-port = 8420
+import ssl
 
 class HBP:
-    HBP_VERSION =           1
-    HBP_MAGIC =             0x4B9A208E
-    HBP_PORT =              8420
-    HBP_HEADER_LENGTH =     8
+    HBP_VERSION                     = 1
+    HBP_MAGIC                       = 0x4B9A208E
+    HBP_PORT                        = 8420
+    HBP_HEADER_LENGTH               = 8
 
     # Constants
-    HBP_ERROR_MAX =         10
-    HBP_LENGTH_MAX =        32768
-    HBP_IBAN_MIN =          9
-    HBP_IBAN_MAX =          34
-    HBP_PIN_MIN =           4
-    HBP_PIN_MAX =           12
-    HBP_PINTRY_MAX =        3
-    HBP_TIMEOUT =           (5 * 60)
-    HBP_CID_MAX =           12
+    HBP_ERROR_MAX                   = 10
+    HBP_LENGTH_MAX                  = 1024
+    HBP_IBAN_MIN                    = 9
+    HBP_IBAN_MAX                    = 34
+    HBP_PIN_MIN                     = 4
+    HBP_PIN_MAX                     = 12
+    HBP_PINTRY_MAX                  = 3
+    HBP_TIMEOUT                     = (5 * 60)
+    HBP_CID_MAX                     = 12
 
     # Types of requests
-    HBP_REQ_LOGIN =         0
-    HBP_REQ_LOGOUT =        1
-    HBP_REQ_INFO =          2
-    HBP_REQ_BALANCE =       3
-    HBP_REQ_TRANSFER =      4
+    HBP_REQ_LOGIN                   = 0
+    HBP_REQ_LOGOUT                  = 1
+    HBP_REQ_INFO                    = 2
+    HBP_REQ_BALANCE                 = 3
+    HBP_REQ_TRANSFER                = 4
 
     # Types of replies
-    HBP_REP_LOGIN =         128
-    HBP_REP_TERMINATED =    129
-    HBP_REP_INFO =          130
-    HBP_REP_BALANCE =       131
-    HBP_REP_TRANSFER =      132
-    HBP_REP_ERROR =         133
+    HBP_REP_LOGIN                   = 128
+    HBP_REP_TERMINATED              = 129
+    HBP_REP_INFO                    = 130
+    HBP_REP_BALANCE                 = 131
+    HBP_REP_TRANSFER                = 132
+    HBP_REP_ERROR                   = 133
 
     # Indicates whether the login failed or succeeded
-    HBP_LOGIN_GRANTED =     0
-    HBP_LOGIN_DENIED =      1
-    HBP_LOGIN_BLOCKED =     2
+    HBP_LOGIN_GRANTED               = 0
+    HBP_LOGIN_DENIED                = 1
+    HBP_LOGIN_BLOCKED               = 2
 
     # Indicates why the session has ended/the server will disconnect
-    HBP_TERM_LOGOUT =       0
-    HBP_TERM_EXPIRED =      1
-    HBP_TERM_CLOSED =       2
+    HBP_TERM_LOGOUT                 = 0
+    HBP_TERM_EXPIRED                = 1
+    HBP_TERM_CLOSED                 = 2
+
+    # Result status of a transfer
+    HBP_TRANSFER_SUCCESS            = 0
+    HBP_TRANSFER_PROCESSING         = 1
+    HBP_TRANSFER_INSUFFICIENT_FUNDS = 2
 
     def __init__(self, host, port):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH, cafile='crt/ca.crt')
+        context.load_cert_chain(certfile='crt/client.crt', keyfile='crt/client.key')
 
-        self.sock.connect((host, port))
+        plainsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def send(self, request_type, data):
+        self.sock = context.wrap_socket(plainsock, server_side=False, server_hostname=host)
+        self.sock.connect((host, int(port)))
+
+    def _send(self, request_type, data):
         packed = msgpack.packb(data, use_bin_type=True)
 
         header = bytearray()
@@ -78,7 +85,7 @@ class HBP:
         self.sock.sendall(header)
         self.sock.sendall(packed)
 
-    def receive(self):
+    def _receive(self):
         # wait for the header to arrive
         header = self.sock.recv(self.HBP_HEADER_LENGTH)
 
@@ -102,31 +109,95 @@ class HBP:
         if reply_type == self.HBP_REP_ERROR:
             return (reply_type, 0)
         else:
-            return (reply_type, {msgpack.unpackb(data, raw=False)})
+            return (reply_type, msgpack.unpackb(data, raw=False))
+
+    def replyType(self, reply_type):
+        # TODO should put this in a list or something but I was lazy
+        if reply_type == self.HBP_REP_LOGIN:
+            return 'HBP_REP_LOGIN'
+        elif reply_type == self.HBP_REP_TERMINATED:
+            return 'HBP_REP_TERMINATED'
+        elif reply_type == self.HBP_REP_INFO:
+            return 'HBP_REP_INFO'
+        elif reply_type == self.HBP_REP_BALANCE:
+            return 'HBP_REP_BALANCE'
+        elif reply_type == self.HBP_REP_TRANSFER:
+            return 'HBP_REP_TRANSFER'
+        elif reply_type == self.HBP_REP_ERROR:
+            return 'HBP_REP_ERROR'
 
     def request(self, request_type, data):
-        self.send(request_type, data)
-        return self.receive()
+        self._send(request_type, data)
+        return self._receive()
 
-print('Copyright (C) 2021 Herbank CLI v1.0')
-hbp = HBP(host, port)
-print(f'Connected to Herbank Server @ {host}:{port}')
-print('')
+    # FIXME all these functions below can be written way more compactly, but again, I'm lazy
 
-while True:
-    card_id = input('Card ID: ')
-    try:
-        int(card_id)
-    except ValueError:
-        print("Invalid Card ID")
-        continue
+    def login(self, card_id, iban, pin):
+        # send a login request to the server
+        request = [card_id, iban, pin]
+        reply = self.request(self.HBP_REQ_LOGIN, request)
 
-    pin = input('PIN: ')
-    try:
-        int(pin)
-    except ValueError:
-        print("Invalid PIN")
-        continue
+        # check the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_LOGIN:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
 
-    data = [card_id, pin]
-    print(hbp.request(hbp.HBP_REQ_LOGIN, data))
+        # return the login status if successful
+        return reply[1]
+
+    def logout(self):
+        # send a logout request to the server
+        request = []
+        reply = self.request(self.HBP_REQ_LOGOUT, request)
+
+        # check the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_TERMINATED:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the logout reason otherwise (which should always be HBP_TERM_LOGOUT)
+        return reply[1]
+
+    def info(self):
+        # send an info request to the server
+        request = []
+        reply = self.request(self.HBP_REQ_INFO, request)
+
+        # check the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_INFO:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the first and last name in an array if successful
+        return reply[1]
+
+    def balance(self):
+        # send an info request to the server
+        request = []
+        reply = self.request(self.HBP_REQ_BALANCE, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_BALANCE:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the first and last name in an array if successful
+        return reply[1]
+
+    def transfer(self, iban, amount):
+        # send a transfer request to the server
+        request = [iban, amount]
+        reply = self.request(self.HBP_REQ_TRANSFER, request)
+
+        # check if the server's reply
+        reply_type = reply[0]
+        if reply_type != self.HBP_REP_TRANSFER:
+            # return the type of reply that was received instead of the expected one
+            return self.replyType(reply_type)
+
+        # return the first and last name in an array if successful
+        return reply[1]
