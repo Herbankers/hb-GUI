@@ -1,10 +1,13 @@
 from PyQt6 import QtCore, QtWidgets, uic
 from PyQt6.QtCore import *
+import functools
 import getopt
 import sys
 
 from hbp import *
+from ui.main import *
 
+app = None
 hbp = None
 
 # although both the server and HBP support PINs of up to 12 numbers, we've decided to hardcode 4 in the client for now
@@ -25,29 +28,37 @@ class MainWindow(QtWidgets.QMainWindow):
     keybuf = []
     keyindex = 0
 
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        uic.loadUi('ui/main.ui', self)
-        self.stack.setCurrentIndex(self.CARD_PAGE)
+    translator = QTranslator()
+
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.stack.setCurrentIndex(self.CARD_PAGE)
+
+        # Card page
+        self.ui.dutch.clicked.connect(self.dutch)
+        self.ui.german.clicked.connect(self.german)
+        self.ui.english.clicked.connect(self.english)
 
         # Main page
-        self.withdraw.clicked.connect(self.doWithdrawPage)
-        self.donate.clicked.connect(self.doDonatePage)
-        self.balance.clicked.connect(self.doBalancePage)
-        self.quickWithdrawal.clicked.connect(self.doQuickWithdrawal)
-        self.logout.clicked.connect(self.doLogout)
+        self.ui.withdraw.clicked.connect(self.doWithdrawPage)
+        self.ui.donate.clicked.connect(self.doDonatePage)
+        self.ui.balance.clicked.connect(self.doBalancePage)
+        self.ui.quickWithdrawal.clicked.connect(self.doQuickWithdrawal)
+        self.ui.logout.clicked.connect(self.doLogout)
 
         # Withdraw page
-        self.withdrawAbort.clicked.connect(self.doAbort)
-        self.withdrawManual.clicked.connect(self.doWithdrawManualPage)
-        self.withdrawAccept.clicked.connect(self.doWithdrawal)
+        self.ui.withdrawAbort.clicked.connect(self.doAbort)
+        self.ui.withdrawManual.clicked.connect(self.doWithdrawManualPage)
+        self.ui.withdrawAccept.clicked.connect(self.doWithdrawal)
 
         # Donate page
-        self.donateAbort.clicked.connect(self.doAbort)
-        self.donateAccept.clicked.connect(self.doDonation)
+        self.ui.donateAbort.clicked.connect(self.doAbort)
+        self.ui.donateAccept.clicked.connect(self.doDonation)
 
         # Balance page
-        self.balanceAccept.clicked.connect(self.doAbort)
+        self.ui.balanceAccept.clicked.connect(self.doAbort)
 
     # resolve the key event code to a character (only numbers are accepted)
     def getKeyFromEvent(self, key):
@@ -76,13 +87,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # keyboard input handling (not keypad!)
     def keyPressEvent(self, event):
-        if self.stack.currentIndex() == self.CARD_PAGE:
+        if self.ui.stack.currentIndex() == self.CARD_PAGE:
             # TODO build in card reader support and remove this
             self.card_id = 'EBA8001B'
             self.iban = 'NL35HERB2932749274'
 
-            self.stack.setCurrentIndex(self.LOGIN_PAGE)
-        elif self.stack.currentIndex() == self.LOGIN_PAGE:
+            self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
+        elif self.ui.stack.currentIndex() == self.LOGIN_PAGE:
             # store the keyboard key in the keybuffer
             key = self.getKeyFromEvent(event.key())
             if key == None:
@@ -91,13 +102,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # update the pin dots on the display
             if self.keyindex == 0:
-                self.pin.setText('•   ')
+                self.ui.pin.setText('•   ')
             elif self.keyindex == 1:
-                self.pin.setText('••  ')
+                self.ui.pin.setText('••  ')
             elif self.keyindex == 2:
-                self.pin.setText('••• ')
+                self.ui.pin.setText('••• ')
             elif self.keyindex == 3:
-                self.pin.setText('••••')
+                self.ui.pin.setText('••••')
 
             self.keyindex += 1
             if self.keyindex < PIN_LENGTH:
@@ -108,7 +119,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.timeout.connect(self.doLogin)
             self.timer.setSingleShot(True)
             self.timer.start(500)
-        elif self.stack.currentIndex() in (self.WITHDRAW_PAGE, self.DONATE_PAGE):
+        elif self.ui.stack.currentIndex() in (self.WITHDRAW_PAGE, self.DONATE_PAGE):
             # store the keyboard key in the keybuffer
             key = self.getKeyFromEvent(event.key())
             if key == None:
@@ -120,42 +131,44 @@ class MainWindow(QtWidgets.QMainWindow):
             self.keyindex += 1
 
             # write the updated amount to the display
-            self.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
-            self.donateAmount.setText(''.join(self.keybuf) + ' EUR')
+            self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
+            self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
 
     @QtCore.pyqtSlot()
     def doLogin(self):
         # TODO run on separate thread
         reply = hbp.login(self.card_id, self.iban, ''.join(self.keybuf))
 
-        self.pin.setText('')
+        self.ui.pin.setText('')
         self.keybuf = []
         self.keyindex = 0
 
         if reply == hbp.HBP_LOGIN_GRANTED:
-            self.stack.setCurrentIndex(self.MAIN_PAGE)
+            self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
 
             name = hbp.info()
             if type(name) is list:
-                self.name.setText(self.tr('Welkom') + f' {name[0]} {name[1]}!')
+                self.ui.name.setText(self.tr('Welkom') + f' {name[0]} {name[1]}!')
             else:
-                self.name.setText(self.tr('Welkom!'))
+                self.ui.name.setText(self.tr('Welkom!'))
         elif reply == hbp.HBP_LOGIN_DENIED:
-            # TODO show user
-            pass
+            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+            self.onFinish(self.tr('Onjuiste PIN'))
         elif reply == hbp.HBP_LOGIN_BLOCKED:
-            # TODO show user
-            self.stack.setCurrentIndex(self.CARD_PAGE)
+            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+            self.onFinish(self.tr('Deze kaart is geblokkeerd'))
         else:
+            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+            self.onFinish(self.tr('Een interne fout is opgetreden'))
             print(reply)
 
     @QtCore.pyqtSlot()
     def doAbort(self):
-        self.stack.setCurrentIndex(self.MAIN_PAGE)
+        self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
 
     @QtCore.pyqtSlot()
-    def onFinish(self):
-        self.resultText.setText(self.tr('Nog een fijne dag!'))
+    def onFinish(self, text):
+        self.ui.resultText.setText(text)
 
         # automatically logout after 2 seconds
         self.timer = QTimer()
@@ -163,29 +176,53 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.setSingleShot(True)
         self.timer.start(2000)
 
+
+    #
+    # Card page
+    #
+    @QtCore.pyqtSlot()
+    def dutch(self):
+        app.removeTranslator(self.translator)
+        self.ui.retranslateUi(self)
+
+    @QtCore.pyqtSlot()
+    def german(self):
+        app.removeTranslator(self.translator)
+        self.translator.load("ts/de_DE.qm")
+        app.installTranslator(self.translator)
+        self.ui.retranslateUi(self)
+
+    @QtCore.pyqtSlot()
+    def english(self):
+        app.removeTranslator(self.translator)
+        self.translator.load("ts/en_US.qm")
+        app.installTranslator(self.translator)
+        self.ui.retranslateUi(self)
+
+
     #
     # Main page
     #
     @QtCore.pyqtSlot()
     def doWithdrawPage(self):
-        self.stack.setCurrentIndex(self.WITHDRAW_PAGE)
+        self.ui.stack.setCurrentIndex(self.WITHDRAW_PAGE)
 
         self.keybuf = ['_'] * 3
         self.keyindex = 0
-        self.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
+        self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
 
     @QtCore.pyqtSlot()
     def doDonatePage(self):
-        self.stack.setCurrentIndex(self.DONATE_PAGE)
+        self.ui.stack.setCurrentIndex(self.DONATE_PAGE)
 
         self.keybuf = ['_'] * 3
         self.keyindex = 0
-        self.donateAmount.setText(''.join(self.keybuf) + ' EUR')
+        self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
 
     @QtCore.pyqtSlot()
     def doBalancePage(self):
-        self.balanceAmount.setText(hbp.balance().replace('.', ',') + ' EUR')
-        self.stack.setCurrentIndex(self.BALANCE_PAGE)
+        self.ui.balanceAmount.setText(hbp.balance().replace('.', ',') + ' EUR')
+        self.ui.stack.setCurrentIndex(self.BALANCE_PAGE)
 
     @QtCore.pyqtSlot()
     def doQuickWithdrawal(self):
@@ -200,11 +237,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # we should clear all modified variables and labels here for security
         self.keybuf = []
         self.keyindex = 0
-        self.withdrawAmount.setText('')
-        self.donateAmount.setText('')
-        self.balanceAmount.setText('')
+        self.ui.withdrawAmount.setText('')
+        self.ui.donateAmount.setText('')
+        self.ui.balanceAmount.setText('')
 
-        self.stack.setCurrentIndex(self.CARD_PAGE)
+        self.dutch()
+        self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
     #
     # Withdraw page
@@ -218,39 +256,35 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         # start processing
-        self.stack.setCurrentIndex(self.RESULT_PAGE)
-        self.resultText.setText(self.tr('Een moment geduld...'))
+        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+        self.ui.resultText.setText(self.tr('Een moment geduld...'))
         reply = hbp.transfer('', amount);
 
         if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
             # TODO operate money dispenser here (on a separate thread ofc) instead of this delay
             self.timer = QTimer()
-            self.timer.timeout.connect(self.onFinish)
+            self.timer.timeout.connect(functools.partial(self.onFinish, text=self.tr('Nog een fijne dag!')))
             self.timer.setSingleShot(True)
             self.timer.start(3000)
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
-            self.resultText.setText(self.tr('Uw saldo is ontoereikend'))
+            self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
 
             self.timer = QTimer()
             self.timer.timeout.connect(self.doAbort)
             self.timer.setSingleShot(True)
             self.timer.start(3000)
         else:
-            print(reply)
-
             # TODO handle session timeout
-            self.resultText.setText(self.tr('Een interne fout is opgetreden'))
+            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+            self.onFinish(self.tr('Een interne fout is opgetreden'))
 
-            self.timer = QTimer()
-            self.timer.timeout.connect(self.doAbort)
-            self.timer.setSingleShot(True)
-            self.timer.start(3000)
+            print(reply)
 
     @QtCore.pyqtSlot()
     def doWithdrawManualPage(self):
         # TODO implement
-        self.stack.setCurrentIndex(self.RESULT_PAGE)
-        self.resultText.setText('Nog niet geïmplementeerd')
+        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+        self.ui.resultText.setText('Nog niet geïmplementeerd')
         self.timer = QTimer()
         self.timer.timeout.connect(self.doAbort)
         self.timer.setSingleShot(True)
@@ -262,8 +296,8 @@ class MainWindow(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot()
     def doDonation(self):
         # TODO implement
-        self.stack.setCurrentIndex(self.RESULT_PAGE)
-        self.resultText.setText('Nog niet geïmplementeerd')
+        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+        self.ui.resultText.setText('Nog niet geïmplementeerd')
         self.timer = QTimer()
         self.timer.timeout.connect(self.doAbort)
         self.timer.setSingleShot(True)
@@ -274,6 +308,7 @@ def help():
     print('usage: gui.py [-h] [-s | --serial-port=] [-h | --host=] [-p | --port=]')
 
 def main(argv):
+    global app
     global hbp
     #  global arduino
 
@@ -313,6 +348,7 @@ def main(argv):
         #  arduino = serial.Serial(serial_port, 9600, timeout=.1)
 
     app = QtWidgets.QApplication(sys.argv)
+
     win = MainWindow()
     win.show()
     sys.exit(app.exec())
