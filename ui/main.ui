@@ -63,6 +63,7 @@ QLabel {
 	font-size: 48px;
 }
 
+#pin,
 #withdrawAmount,
 #donateAmount,
 #balanceAmount {
