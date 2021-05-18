@@ -19,9 +19,11 @@ class MainWindow(QtWidgets.QMainWindow):
     LOGIN_PAGE = 1
     MAIN_PAGE = 2
     WITHDRAW_PAGE = 3
-    DONATE_PAGE = 4
-    BALANCE_PAGE = 5
-    RESULT_PAGE = 6
+    WITHDRAW_MANUAL_PAGE = 4
+    WITHDRAW_BILLS_PAGE = 5
+    DONATE_PAGE = 6
+    BALANCE_PAGE = 7
+    RESULT_PAGE = 8
 
     card_id = ''
     iban = ''
@@ -42,23 +44,35 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.english.clicked.connect(self.english)
 
         # Main page
-        self.ui.withdraw.clicked.connect(self.doWithdrawPage)
-        self.ui.donate.clicked.connect(self.doDonatePage)
-        self.ui.balance.clicked.connect(self.doBalancePage)
-        self.ui.quickWithdrawal.clicked.connect(self.doQuickWithdrawal)
-        self.ui.logout.clicked.connect(self.doLogout)
+        self.ui.withdraw.clicked.connect(self.withdrawPage)
+        self.ui.donate.clicked.connect(self.donatePage)
+        self.ui.balance.clicked.connect(self.balancePage)
+        self.ui.quickWithdrawal.clicked.connect(functools.partial(self.withdraw, amount=7000))
+        self.ui.logout.clicked.connect(self.logout)
 
         # Withdraw page
-        self.ui.withdrawAbort.clicked.connect(self.doAbort)
-        self.ui.withdrawManual.clicked.connect(self.doWithdrawManualPage)
-        self.ui.withdrawAccept.clicked.connect(self.doWithdrawal)
+        self.ui.withdrawAbort.clicked.connect(self.abort)
+        self.ui.withdrawOption0.clicked.connect(functools.partial(self.withdraw, amount=1000))
+        self.ui.withdrawOption1.clicked.connect(functools.partial(self.withdraw, amount=2000))
+        self.ui.withdrawOption2.clicked.connect(functools.partial(self.withdraw, amount=5000))
+        self.ui.withdrawOption3.clicked.connect(functools.partial(self.withdraw, amount=10000))
+        self.ui.withdrawManual.clicked.connect(self.withdrawManualPage)
+
+        # Withdraw manual page
+        self.ui.withdrawManualAbort.clicked.connect(self.abort)
+        self.ui.withdrawBills.clicked.connect(self.withdrawBillsPage)
+        self.ui.withdrawManualAccept.clicked.connect(self.withdrawFromKeybuf)
+
+        # Withdraw bill selection page
+        self.ui.withdrawBillsAbort.clicked.connect(self.abort)
+        # TODO
 
         # Donate page
-        self.ui.donateAbort.clicked.connect(self.doAbort)
-        self.ui.donateAccept.clicked.connect(self.doDonation)
+        self.ui.donateAbort.clicked.connect(self.abort)
+        self.ui.donateAccept.clicked.connect(self.donate)
 
         # Balance page
-        self.ui.balanceAccept.clicked.connect(self.doAbort)
+        self.ui.balanceAccept.clicked.connect(self.abort)
 
     # resolve the key event code to a character (only numbers are accepted)
     def getKeyFromEvent(self, key):
@@ -116,10 +130,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # short delay here to show that the 4th character has been entered
             self.timer = QTimer()
-            self.timer.timeout.connect(self.doLogin)
+            self.timer.timeout.connect(self.login)
             self.timer.setSingleShot(True)
             self.timer.start(500)
-        elif self.ui.stack.currentIndex() in (self.WITHDRAW_PAGE, self.DONATE_PAGE):
+        elif self.ui.stack.currentIndex() in (self.WITHDRAW_MANUAL_PAGE, self.DONATE_PAGE):
             # store the keyboard key in the keybuffer
             key = self.getKeyFromEvent(event.key())
             if key == None:
@@ -135,7 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
 
     @QtCore.pyqtSlot()
-    def doLogin(self):
+    def login(self):
         # TODO run on separate thread
         reply = hbp.login(self.card_id, self.iban, ''.join(self.keybuf))
 
@@ -153,26 +167,35 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.name.setText(self.tr('Welkom!'))
         elif reply == hbp.HBP_LOGIN_DENIED:
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Onjuiste PIN'))
+            self.onFinish(self.tr('Onjuiste PIN'), logout=False)
         elif reply == hbp.HBP_LOGIN_BLOCKED:
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Deze kaart is geblokkeerd'))
+            self.onFinish(self.tr('Deze kaart is geblokkeerd'), logout=False)
         else:
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Een interne fout is opgetreden'))
+            self.onFinish(self.tr('Een interne fout is opgetreden'), logout=False)
             print(reply)
 
+    # FIXME replace these with lambda or something?
     @QtCore.pyqtSlot()
-    def doAbort(self):
+    def abort(self):
         self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
 
     @QtCore.pyqtSlot()
-    def onFinish(self, text):
+    def goHome(self):
+        self.ui.stack.setCurrentIndex(self.CARD_PAGE)
+
+    @QtCore.pyqtSlot()
+    def onFinish(self, text, logout=True):
         self.ui.resultText.setText(text)
 
         # automatically logout after 2 seconds
         self.timer = QTimer()
-        self.timer.timeout.connect(self.doLogout)
+        if logout:
+            self.timer.timeout.connect(self.logout)
+        else:
+            self.timer.timeout.connect(self.goHome)
+
         self.timer.setSingleShot(True)
         self.timer.start(2000)
 
@@ -204,15 +227,11 @@ class MainWindow(QtWidgets.QMainWindow):
     # Main page
     #
     @QtCore.pyqtSlot()
-    def doWithdrawPage(self):
+    def withdrawPage(self):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_PAGE)
 
-        self.keybuf = ['_'] * 3
-        self.keyindex = 0
-        self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
-
     @QtCore.pyqtSlot()
-    def doDonatePage(self):
+    def donatePage(self):
         self.ui.stack.setCurrentIndex(self.DONATE_PAGE)
 
         self.keybuf = ['_'] * 3
@@ -220,17 +239,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
 
     @QtCore.pyqtSlot()
-    def doBalancePage(self):
+    def balancePage(self):
         self.ui.balanceAmount.setText(hbp.balance().replace('.', ',') + ' EUR')
         self.ui.stack.setCurrentIndex(self.BALANCE_PAGE)
 
     @QtCore.pyqtSlot()
-    def doQuickWithdrawal(self):
-        self.keybuf = '70'
-        self.doWithdrawal()
-
-    @QtCore.pyqtSlot()
-    def doLogout(self):
+    def logout(self):
         # we can check the reply, but this is really not needed, as it basically always succeeds
         hbp.logout()
 
@@ -248,13 +262,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # Withdraw page
     #
     @QtCore.pyqtSlot()
-    def doWithdrawal(self):
-        try:
-            amount = int(''.join(self.keybuf).replace('_', '')) * 100
-        except ValueError:
-            # nothing has been entered yet
-            return
-
+    def withdraw(self, amount):
         # start processing
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText(self.tr('Een moment geduld...'))
@@ -270,7 +278,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
 
             self.timer = QTimer()
-            self.timer.timeout.connect(self.doAbort)
+            self.timer.timeout.connect(self.abort)
             self.timer.setSingleShot(True)
             self.timer.start(3000)
         else:
@@ -280,26 +288,46 @@ class MainWindow(QtWidgets.QMainWindow):
 
             print(reply)
 
+    #
+    # Withdraw manual page
+    #
     @QtCore.pyqtSlot()
-    def doWithdrawManualPage(self):
+    def withdrawManualPage(self):
+        self.ui.stack.setCurrentIndex(self.WITHDRAW_MANUAL_PAGE)
+
+        self.keybuf = ['_'] * 3
+        self.keyindex = 0
+        self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
+
+    @QtCore.pyqtSlot()
+    def withdrawFromKeybuf(self):
+        try:
+            amount = int(''.join(self.keybuf).replace('_', '')) * 100
+        except ValueError:
+            # nothing has been entered yet
+            return
+
+        self.withdraw(amount)
+
+    #
+    # Withdraw bill selection page
+    #
+    @QtCore.pyqtSlot()
+    def withdrawBillsPage(self):
+        self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
+
         # TODO implement
-        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-        self.ui.resultText.setText('Nog niet geïmplementeerd')
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.doAbort)
-        self.timer.setSingleShot(True)
-        self.timer.start(2000)
 
     #
     # Donate page
     #
     @QtCore.pyqtSlot()
-    def doDonation(self):
+    def donate(self):
         # TODO implement
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText('Nog niet geïmplementeerd')
         self.timer = QTimer()
-        self.timer.timeout.connect(self.doAbort)
+        self.timer.timeout.connect(self.abort)
         self.timer.setSingleShot(True)
         self.timer.start(2000)
 

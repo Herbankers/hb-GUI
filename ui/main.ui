@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1424</width>
-    <height>857</height>
+    <width>1118</width>
+    <height>862</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,10 +40,12 @@ QLabel {
 
 #pinText,
 #withdrawText,
+#withdrawManualText,
+#withdrawBillsText,
 #donateText,
 #balanceText,
 #name {
-	padding: 32px;
+	padding: 48px;
 }
 
 #pin {
@@ -65,27 +67,34 @@ QPushButton:pressed {
 
 #withdraw,
 #donate,
-#balance {
+#balance,
+#withdrawOption0,
+#withdrawOption1 {
 	text-align: left;
 	border-top-right-radius: 8px;
 	border-bottom-right-radius: 8px;
 }
 
 #quickWithdrawal,
-#withdrawManual {
+#withdrawOption2,
+#withdrawOption3,
+#withdrawBills {
 	text-align: right;
 	border-top-left-radius: 8px;
 	border-bottom-left-radius: 8px;
 }
 
 #withdrawAbort,
+#withdrawManualAbort,
+#withdrawBillsAbort,
 #donateAbort {
 	text-align: left;
 	border-top-right-radius: 8px;
 }
 
 #logout,
-#withdrawAccept,
+#withdrawManual,
+#withdrawManualAccept,
 #donateAccept,
 #balanceAccept {
 	text-align: right;
@@ -129,7 +138,7 @@ QPushButton:pressed {
      <widget class="QStackedWidget" name="stack">
       <property name="minimumSize">
        <size>
-        <width>250</width>
+        <width>0</width>
         <height>0</height>
        </size>
       </property>
@@ -138,6 +147,9 @@ QPushButton:pressed {
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -441,6 +453,9 @@ QPushButton:pressed {
       </widget>
       <widget class="QWidget" name="loginPage">
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -515,6 +530,9 @@ QPushButton:pressed {
       </widget>
       <widget class="QWidget" name="mainPage">
        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -529,6 +547,12 @@ QPushButton:pressed {
         </property>
         <item>
          <widget class="QLabel" name="name">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>150</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>48</pointsize>
@@ -571,6 +595,12 @@ QPushButton:pressed {
                 <height>0</height>
                </size>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
               <property name="font">
                <font>
                 <pointsize>32</pointsize>
@@ -589,6 +619,12 @@ QPushButton:pressed {
                 <height>0</height>
                </size>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
               <property name="font">
                <font>
                 <pointsize>32</pointsize>
@@ -605,6 +641,12 @@ QPushButton:pressed {
                <size>
                 <width>350</width>
                 <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
                </size>
               </property>
               <property name="font">
@@ -630,6 +672,22 @@ QPushButton:pressed {
               </property>
              </spacer>
             </item>
+            <item>
+             <spacer name="verticalSpacer_20">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>118</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
           <item>
@@ -651,14 +709,39 @@ QPushButton:pressed {
              <number>32</number>
             </property>
             <item>
+             <spacer name="verticalSpacer_24">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
              <widget class="QPushButton" name="quickWithdrawal">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
               <property name="font">
                <font>
                 <pointsize>32</pointsize>
                </font>
               </property>
               <property name="text">
-               <string>€70 opnemen    3</string>
+               <string>€70 opnemen    6</string>
               </property>
              </widget>
             </item>
@@ -683,6 +766,12 @@ QPushButton:pressed {
                 <height>0</height>
                </size>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
               <property name="font">
                <font>
                 <pointsize>32</pointsize>
@@ -700,7 +789,278 @@ QPushButton:pressed {
        </layout>
       </widget>
       <widget class="QWidget" name="withdrawPage">
+       <layout class="QVBoxLayout" name="verticalLayout_12">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="withdrawText">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>150</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>48</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Selecteer het op te nemen bedrag</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <property name="spacing">
+             <number>32</number>
+            </property>
+            <item>
+             <spacer name="verticalSpacer_18">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawOption0">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>1    10 EUR</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawOption1">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>4    20 EUR</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_21">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawAbort">
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>﹡    Afbreken</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_10">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <property name="spacing">
+             <number>32</number>
+            </property>
+            <item>
+             <spacer name="verticalSpacer_19">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawOption2">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>50 EUR    3</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawOption3">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>100 EUR    6</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_22">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawManual">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>32</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Eigen invoer    #</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="withdrawManualPage">
        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -743,7 +1103,7 @@ QPushButton:pressed {
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="withdrawText">
+         <widget class="QLabel" name="withdrawManualText">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -815,11 +1175,17 @@ QPushButton:pressed {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="withdrawManual">
+           <widget class="QPushButton" name="withdrawBills">
             <property name="minimumSize">
              <size>
               <width>350</width>
               <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>86</height>
              </size>
             </property>
             <property name="font">
@@ -835,9 +1201,25 @@ QPushButton:pressed {
          </layout>
         </item>
         <item>
+         <spacer name="verticalSpacer_23">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>32</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="withdrawAbort">
+           <widget class="QPushButton" name="withdrawManualAbort">
             <property name="minimumSize">
              <size>
               <width>350</width>
@@ -874,7 +1256,7 @@ QPushButton:pressed {
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="withdrawAccept">
+           <widget class="QPushButton" name="withdrawManualAccept">
             <property name="minimumSize">
              <size>
               <width>350</width>
@@ -884,7 +1266,7 @@ QPushButton:pressed {
             <property name="maximumSize">
              <size>
               <width>350</width>
-              <height>16777215</height>
+              <height>86</height>
              </size>
             </property>
             <property name="font">
@@ -901,8 +1283,106 @@ QPushButton:pressed {
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="withdrawBillsPage">
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="withdrawBillsText">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>150</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>48</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Selecteer uw biljetten</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_25">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QPushButton" name="withdrawBillsAbort">
+            <property name="minimumSize">
+             <size>
+              <width>350</width>
+              <height>86</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>350</width>
+              <height>86</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>32</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>﹡    Afbreken</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_11">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="donatePage">
        <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -1036,6 +1516,12 @@ QPushButton:pressed {
               <height>0</height>
              </size>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>86</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <pointsize>32</pointsize>
@@ -1052,6 +1538,9 @@ QPushButton:pressed {
       </widget>
       <widget class="QWidget" name="balancePage">
        <layout class="QVBoxLayout" name="verticalLayout_7">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -1161,6 +1650,12 @@ QPushButton:pressed {
               <height>0</height>
              </size>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>86</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <pointsize>32</pointsize>
@@ -1177,6 +1672,9 @@ QPushButton:pressed {
       </widget>
       <widget class="QWidget" name="resultPage">
        <layout class="QVBoxLayout" name="verticalLayout_8">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QLabel" name="resultText">
           <property name="font">
