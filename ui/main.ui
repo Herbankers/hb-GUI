@@ -546,7 +546,7 @@ QPushButton:pressed {
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QPushButton" name="pinAbort">
+           <widget class="QPushButton" name="loginAbort">
             <property name="minimumSize">
              <size>
               <width>350</width>

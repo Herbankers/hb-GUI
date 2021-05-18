@@ -8,17 +8,39 @@ from hbp import *
 from ui.main import *
 
 #
-# TODO
-# Client side countdown to automatically end session after hbp.HBP_TIMEOUT seconds
-# Keypad control
+# On PC keyboards,
+#   '-' can be used instead of '*'
+#  and
+#   '=' can be used instead of '#'
 #
 
-app = None
-hbp = None
+
+#
+# TODO
+# Client side countdown to automatically end session after hbp.HBP_TIMEOUT seconds
+#
+
+app = None      # QApplication
+hbp = None      # hbp object
+arduino = None  # serial object
 
 # although both the server and HBP support PINs of up to 12 numbers, we've decided to hardcode 4 in the client for now
 # for convenience sake
 PIN_LENGTH = 4
+
+class Arduino(QObject):
+    keyPress = pyqtSignal(str)
+    cardScan = pyqtSignal(str)
+
+    def run(self):
+        while True:
+            data = arduino.readline()[:-2]
+            decoded_data = str(data, 'utf-8')
+
+            if decoded_data[0:1] == 'K':
+                self.keyPress.emit(decoded_data[1:])
+            if decoded_data[0:1] == 'U':
+                self.cardScan.emit(decoded_data[1:])
 
 class MainWindow(QtWidgets.QMainWindow):
     CARD_PAGE = 0
@@ -46,38 +68,207 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
+        # create a thread for serial connections if an arduino is connected
+        if arduino != None:
+            self.thread = QThread()
+            self.worker = Arduino()
+            self.worker.moveToThread(self.thread)
+
+            self.thread.started.connect(self.worker.run)
+            self.worker.keyPress.connect(self.keypadPress)
+            self.worker.cardScan.connect(self.cardScan)
+
+            self.thread.start()
+
         # Card page
-        self.ui.dutch.clicked.connect(self.dutch)
-        self.ui.german.clicked.connect(self.german)
-        self.ui.english.clicked.connect(self.english)
+        self.card_menu = {
+            '1': self.dutch, '2': self.german, '3': self.english
+        }
+        self.ui.dutch.clicked.connect(self.card_menu['1'])
+        self.ui.german.clicked.connect(self.card_menu['2'])
+        self.ui.english.clicked.connect(self.card_menu['3'])
+
+        self.login_menu = {
+            '*': self.clearInput
+        }
+        self.ui.loginAbort.clicked.connect(self.login_menu['*'])
 
         # Main page
-        self.ui.withdraw.clicked.connect(self.withdrawPage)
-        self.ui.donate.clicked.connect(self.donatePage)
-        self.ui.balance.clicked.connect(self.balancePage)
-        self.ui.quickWithdrawal.clicked.connect(functools.partial(self.withdraw, amount=7000))
-        self.ui.logout.clicked.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
+        self.main_menu = {
+            '1': self.withdrawPage,
+            '4': self.donatePage,   '6': functools.partial(self.withdraw, amount=7000),
+            '7': self.balancePage,
+                                    '#': functools.partial(self.showResult, text=self.tr('Nog een fijne dag!'))
+        }
+        self.ui.withdraw.clicked.connect(self.main_menu['1'])
+        self.ui.donate.clicked.connect(self.main_menu['4'])
+        self.ui.balance.clicked.connect(self.main_menu['7'])
+        self.ui.quickWithdrawal.clicked.connect(self.main_menu['6'])
+        self.ui.logout.clicked.connect(self.main_menu['#'])
 
         # Withdraw page
-        self.ui.withdrawAbort.clicked.connect(self.abort)
-        self.ui.withdrawOption0.clicked.connect(functools.partial(self.withdraw, amount=1000))
-        self.ui.withdrawOption1.clicked.connect(functools.partial(self.withdraw, amount=2000))
-        self.ui.withdrawOption2.clicked.connect(functools.partial(self.withdraw, amount=5000))
-        self.ui.withdrawOption3.clicked.connect(functools.partial(self.withdraw, amount=10000))
-        self.ui.withdrawManual.clicked.connect(self.withdrawManualPage)
+        self.withdraw_menu = {
+            '1': functools.partial(self.withdraw, amount=1000), '3': functools.partial(self.withdraw, amount=5000),
+            '4': functools.partial(self.withdraw, amount=2000), '6': functools.partial(self.withdraw, amount=10000),
+            '*': self.abort,                                    '#': self.withdrawManualPage
+        }
+        self.ui.withdrawOption0.clicked.connect(self.withdraw_menu['1'])
+        self.ui.withdrawOption1.clicked.connect(self.withdraw_menu['4'])
+        self.ui.withdrawOption2.clicked.connect(self.withdraw_menu['3'])
+        self.ui.withdrawOption3.clicked.connect(self.withdraw_menu['6'])
+        self.ui.withdrawAbort.clicked.connect(self.withdraw_menu['*'])
+        self.ui.withdrawManual.clicked.connect(self.withdraw_menu['#'])
 
         # Withdraw manual page
-        self.ui.withdrawManualAccept.clicked.connect(self.withdrawFromKeybuf)
+        self.withdrawManual_menu = {
+            '*': self.clearInput, '#': self.withdrawFromKeybuf
+        }
+        self.ui.withdrawManualAbort.clicked.connect(self.withdrawManual_menu['*'])
+        self.ui.withdrawManualAccept.clicked.connect(self.withdrawManual_menu['#'])
 
         # Withdraw bill selection page
         # TODO
 
         # Donate page
-        self.ui.donateAbort.clicked.connect(self.abort)
-        self.ui.donateAccept.clicked.connect(self.donate)
+        self.donate_menu = {
+            '*': self.clearInput, '#': self.donate
+        }
+        self.ui.donateAbort.clicked.connect(self.donate_menu['*'])
+        self.ui.donateAccept.clicked.connect(self.donate_menu['#'])
 
         # Balance page
-        self.ui.balanceAccept.clicked.connect(self.abort)
+        self.balance_menu = {
+            '#': self.abort
+        }
+        self.ui.balanceAccept.clicked.connect(self.balance_menu['#'])
+
+        self.menus = {
+            self.CARD_PAGE: self.card_menu,
+            self.LOGIN_PAGE: self.login_menu,
+            self.MAIN_PAGE: self.main_menu,
+            self.WITHDRAW_PAGE: self.withdraw_menu,
+            self.WITHDRAW_MANUAL_PAGE: self.withdrawManual_menu,
+            self.DONATE_PAGE: self.donate_menu,
+            self.BALANCE_PAGE: self.balance_menu
+        }
+
+    # card scan handler
+    @pyqtSlot(str)
+    def cardScan(self, data):
+        if self.ui.stack.currentIndex() == self.CARD_PAGE:
+            self.card_id = data
+            self.iban = 'NL35HERB2932749274' # FIXME correctly retrieve iban from rfid card
+
+            self.ui.pinText.setGraphicsEffect(None)
+            self.ui.loginAbort.setGraphicsEffect(None)
+            self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
+            self.clearInput(abort=False)
+
+    def keyHandler(self, key):
+        page = self.ui.stack.currentIndex()
+
+        try:
+            self.menus[page][key]()
+            return
+        except KeyError:
+            pass
+
+        # XXX Temporary XXX
+        if page == self.CARD_PAGE:
+            if key == '*':
+                self.card_id = 'EBA8001B'
+                self.iban = 'NL35HERB2932749274'
+
+                self.ui.pinText.setGraphicsEffect(None)
+                self.ui.loginAbort.setGraphicsEffect(None)
+                self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
+                self.clearInput(abort=False)
+                return
+        elif page == self.LOGIN_PAGE:
+            # store the key in the keybuffer
+            self.keybuf.append(key)
+
+            # change the abort button to a correction button
+            self.ui.loginAbort.setText(self.tr('﹡    Correctie'))
+
+            # update the pin dots on the display
+            if self.keyindex == 0:
+                self.ui.pin.setText('•   ')
+            elif self.keyindex == 1:
+                self.ui.pin.setText('••  ')
+            elif self.keyindex == 2:
+                self.ui.pin.setText('••• ')
+            elif self.keyindex == 3:
+                self.ui.pin.setText('••••')
+
+            self.keyindex += 1
+            if self.keyindex < PIN_LENGTH:
+                return
+
+            # animate the fading of the loginAbort button
+            self.loginAbortEff = QtWidgets.QGraphicsOpacityEffect()
+            self.loginAbortEff.setOpacity(0.0)
+            self.ui.loginAbort.setGraphicsEffect(self.loginAbortEff)
+
+            # animate the fading of the pin entry help text
+            self.pinTextEff = QtWidgets.QGraphicsOpacityEffect()
+            self.ui.pinText.setGraphicsEffect(self.pinTextEff)
+            self.pinTextAnim = QPropertyAnimation(self.pinTextEff, b"opacity")
+            self.pinTextAnim.setStartValue(1.0)
+            self.pinTextAnim.setEndValue(0.0)
+            self.pinTextAnim.setDuration(300)
+            self.pinTextAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
+
+            # animate the translation of the pin dots to the center of the screen
+            self.pinAnim = QPropertyAnimation(self.ui.pin, b"pos")
+            self.pinAnim.setEndValue(QPoint(self.ui.pin.x(), self.ui.pin.y() - int(self.ui.pinText.height() / 2)))
+            self.pinAnim.setDuration(300)
+            self.pinAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
+
+            # short delay here to show that the 4th character has been entered
+            self.timer = QTimer()
+            self.timer.timeout.connect(self.login)
+            self.timer.setSingleShot(True)
+            self.timer.start(700)
+        elif page in (self.WITHDRAW_MANUAL_PAGE, self.DONATE_PAGE):
+            # store the keyboard key in the keybuffer
+            if self.keyindex > 2:
+                return
+            self.keybuf[self.keyindex] = key
+            self.keyindex += 1
+
+            if self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
+                # change the abort button to a correction button
+                self.ui.withdrawManualAbort.setText(self.tr('﹡    Correctie'))
+
+                # show the accept button
+                self.ui.withdrawManualAccept.show()
+
+                # write the updated amount to the display
+                self.ui.withdrawAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
+            else:
+                # change the abort button to a correction button
+                self.ui.donateAbort.setText(self.tr('﹡    Correctie'))
+
+                # show the accept button
+                self.ui.donateAccept.show()
+
+                # write the updated amount to the display
+                self.ui.donateAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
+
+    # keypad input handler
+    @pyqtSlot(str)
+    def keypadPress(self, data):
+        self.keyHandler(data)
+
+
+    # keyboard input handler
+    def keyPressEvent(self, event):
+        key = self.getKeyFromEvent(event.key())
+        if key == None:
+            return
+
+        self.keyHandler(key)
 
     # resolve the key event code to a character (only numbers are accepted)
     def getKeyFromEvent(self, key):
@@ -101,168 +292,64 @@ class MainWindow(QtWidgets.QMainWindow):
             return '8'
         elif key == Qt.Key.Key_9:
             return '9'
+        elif key == Qt.Key.Key_Minus:
+            return '*'
+        elif key == Qt.Key.Key_Equal:
+            return '#'
         else:
             return None
 
-    # keyboard input handling (not keypad!)
-    def keyPressEvent(self, event):
-        if self.ui.stack.currentIndex() == self.CARD_PAGE:
-            # TODO build in card reader support and remove this
-            self.card_id = 'EBA8001B'
-            self.iban = 'NL35HERB2932749274'
-
-            self.ui.pinText.setGraphicsEffect(None)
-            self.ui.pinAbort.setGraphicsEffect(None)
-            self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
-            self.clearInput()
-        elif self.ui.stack.currentIndex() == self.LOGIN_PAGE:
-            # store the keyboard key in the keybuffer
-            key = self.getKeyFromEvent(event.key())
-            if key == None:
-                return
-            self.keybuf.append(key)
-
-            # change the abort button to a correction button
-            try:
-                self.ui.pinAbort.clicked.disconnect()
-            except TypeError:
-                # idk why this happens
-                pass
-            self.ui.pinAbort.clicked.connect(self.clearInput)
-            self.ui.pinAbort.setText(self.tr('﹡    Correctie'))
-
-            # update the pin dots on the display
-            if self.keyindex == 0:
-                self.ui.pin.setText('•   ')
-            elif self.keyindex == 1:
-                self.ui.pin.setText('••  ')
-            elif self.keyindex == 2:
-                self.ui.pin.setText('••• ')
-            elif self.keyindex == 3:
-                self.ui.pin.setText('••••')
-
-            self.keyindex += 1
-            if self.keyindex < PIN_LENGTH:
-                return
-
-            # animate the fading of the pinAbort button
-            self.pinAbortEff = QtWidgets.QGraphicsOpacityEffect()
-            self.pinAbortEff.setOpacity(0.0)
-            self.ui.pinAbort.setGraphicsEffect(self.pinAbortEff)
-
-            # animate the fading of the pin entry help text
-            self.pinTextEff = QtWidgets.QGraphicsOpacityEffect()
-            self.ui.pinText.setGraphicsEffect(self.pinTextEff)
-            self.pinTextAnim = QPropertyAnimation(self.pinTextEff, b"opacity")
-            self.pinTextAnim.setStartValue(1.0)
-            self.pinTextAnim.setEndValue(0.0)
-            self.pinTextAnim.setDuration(300)
-            self.pinTextAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
-
-            # animate the translation of the pin dots to the center of the screen
-            self.pinAnim = QPropertyAnimation(self.ui.pin, b"pos")
-            self.pinAnim.setEndValue(QPoint(self.ui.pin.x(), self.ui.pin.y() - int(self.ui.pinText.height() / 2)))
-            self.pinAnim.setDuration(300)
-            self.pinAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
-
-            # short delay here to show that the 4th character has been entered
-            self.timer = QTimer()
-            self.timer.timeout.connect(self.login)
-            self.timer.setSingleShot(True)
-            self.timer.start(700)
-        elif self.ui.stack.currentIndex() in (self.WITHDRAW_MANUAL_PAGE, self.DONATE_PAGE):
-            # store the keyboard key in the keybuffer
-            key = self.getKeyFromEvent(event.key())
-            if key == None:
-                return
-
-            if self.keyindex > 2:
-                return
-            self.keybuf[self.keyindex] = key
-            self.keyindex += 1
-
-            if self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
-                # change the abort button to a correction button
-                self.ui.withdrawManualAbort.clicked.disconnect()
-                self.ui.withdrawManualAbort.clicked.connect(self.clearInput)
-                self.ui.withdrawManualAbort.setText(self.tr('﹡    Correctie'))
-
-                # show the accept button
-                self.ui.withdrawManualAccept.show()
-
-                # write the updated amount to the display
-                self.ui.withdrawAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
-            else:
-                # change the abort button to a correction button
-                self.ui.donateAbort.clicked.disconnect()
-                self.ui.donateAbort.clicked.connect(self.clearInput)
-                self.ui.donateAbort.setText(self.tr('﹡    Correctie'))
-
-                # show the accept button
-                self.ui.donateAccept.show()
-
-                # write the updated amount to the display
-                self.ui.donateAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
-
+    # either clear input from the key buffer or abort if the buffer is empty
     @pyqtSlot()
-    def clearInput(self):
-        self.keyindex = 0
-
+    def clearInput(self, abort=True):
         if self.ui.stack.currentIndex() == self.LOGIN_PAGE:
-            self.keybuf = []
+            if not abort or self.keyindex > 0:
+                self.keybuf = []
 
-            # change the correction button back to an abort button
-            try:
-                self.ui.pinAbort.clicked.disconnect()
-            except TypeError:
-                # idk why this happens
-                pass
-            self.ui.pinAbort.clicked.connect(self.goHome)
-            self.ui.pinAbort.setText(self.tr('﹡    Afbreken'))
+                # change the correction button back to an abort button
+                self.ui.loginAbort.setText(self.tr('﹡    Afbreken'))
 
-            # clear the display
-            self.ui.pin.setText('')
+                # clear the display
+                self.ui.pin.setText('')
+            else:
+                self.goHome()
         elif self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
-            self.keybuf = [' '] * 3
+            if not abort or self.keyindex > 0:
+                self.keybuf = [' '] * 3
 
-            # change the correction button back to an abort button
-            try:
-                self.ui.withdrawManualAbort.clicked.disconnect()
-            except TypeError:
-                # idk why this happens
-                pass
-            self.ui.withdrawManualAbort.clicked.connect(self.abort)
-            self.ui.withdrawManualAbort.setText(self.tr('﹡    Afbreken'))
+                # change the correction button back to an abort button
+                self.ui.withdrawManualAbort.setText(self.tr('﹡    Afbreken'))
 
-            # hide the accept button for now
-            self.ui.withdrawManualAccept.hide()
+                # hide the accept button for now
+                self.ui.withdrawManualAccept.hide()
 
-            # clear the display
-            self.ui.withdrawAmount.setText(self.MONOSPACE_HTML + '&nbsp;&nbsp;&nbsp;</font> EUR')
+                # clear the display
+                self.ui.withdrawAmount.setText(self.MONOSPACE_HTML + '&nbsp;&nbsp;&nbsp;</font> EUR')
+            else:
+                self.abort()
         elif self.ui.stack.currentIndex() == self.DONATE_PAGE:
-            self.keybuf = [' '] * 3
+            if not abort or self.keyindex > 0:
+                self.keybuf = [' '] * 3
 
-            # change the correction button back to an abort button
-            try:
-                self.ui.donateAbort.clicked.disconnect()
-            except TypeError:
-                # happens only to withdrawManualAbort, but just in case
-                pass
-            self.ui.donateAbort.clicked.connect(self.abort)
-            self.ui.donateAbort.setText(self.tr('﹡    Afbreken'))
+                # change the correction button back to an abort button
+                self.ui.donateAbort.setText(self.tr('﹡    Afbreken'))
 
-            # hide the accept button for now
-            self.ui.donateAccept.hide()
+                # hide the accept button for now
+                self.ui.donateAccept.hide()
 
-            # clear the display
-            self.ui.donateAmount.setText(self.MONOSPACE_HTML + '&nbsp;&nbsp;&nbsp;</font> EUR')
+                # clear the display
+                self.ui.donateAmount.setText(self.MONOSPACE_HTML + '&nbsp;&nbsp;&nbsp;</font> EUR')
+            else:
+                self.abort()
+
+        self.keyindex = 0
 
     @pyqtSlot()
     def login(self):
         # TODO run on separate thread
         reply = hbp.login(self.card_id, self.iban, ''.join(self.keybuf))
 
-        self.clearInput()
+        self.clearInput(abort=False)
 
         if reply == hbp.HBP_LOGIN_GRANTED:
             self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
@@ -339,7 +426,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def donatePage(self):
         self.ui.stack.setCurrentIndex(self.DONATE_PAGE)
 
-        self.clearInput()
+        self.clearInput(abort=False)
 
     @pyqtSlot()
     def balancePage(self):
@@ -400,7 +487,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def withdrawManualPage(self):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_MANUAL_PAGE)
 
-        self.clearInput()
+        self.clearInput(abort=False)
 
     @pyqtSlot()
     def withdrawFromKeybuf(self):
@@ -441,7 +528,7 @@ def help():
 def main(argv):
     global app
     global hbp
-    #  global arduino
+    global arduino
 
     # parse command line options
     try:
@@ -450,8 +537,8 @@ def main(argv):
         help()
         sys.exit(1)
 
-    # empty input_souce means that we'll use the keyboard as input
-    #  serial_port = ''
+    # empty input_souce means that we'll use only the keyboard and mouse as input
+    serial_port = ''
 
     host = '145.24.222.242'
     port = 8420
@@ -475,8 +562,8 @@ def main(argv):
         exit(1)
     print(f'Connected to Herbank Server @ {host}:{port}')
 
-    #  if serial_port != '':
-        #  arduino = serial.Serial(serial_port, 9600, timeout=.1)
+    if serial_port != '':
+        arduino = serial.Serial(serial_port, 9600, timeout=.1)
 
     app = QtWidgets.QApplication(sys.argv)
 
