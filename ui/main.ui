@@ -49,7 +49,8 @@ QLabel {
 #pinText,
 #withdrawManualText,
 #donateText,
-#balanceText {
+#balanceText,
+#resultText {
 	padding-top: 48px;
 	padding-bottom: 48px;
 	font-size: 42px;
@@ -142,12 +143,6 @@ QPushButton:pressed {
     </property>
     <item>
      <widget class="QLabel" name="logo">
-      <property name="font">
-       <font>
-        <pointsize>-1</pointsize>
-        <bold>false</bold>
-       </font>
-      </property>
       <property name="text">
        <string>INGrid</string>
       </property>
@@ -259,12 +254,6 @@ QPushButton:pressed {
           </item>
           <item>
            <widget class="QLabel" name="presentCardText">
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-              <bold>false</bold>
-             </font>
-            </property>
             <property name="text">
              <string>Houdt uw kaart voor de lezer</string>
             </property>
@@ -329,12 +318,6 @@ QPushButton:pressed {
            <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
              <widget class="QLabel" name="dutchText">
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-                <bold>false</bold>
-               </font>
-              </property>
               <property name="text">
                <string>1</string>
               </property>
@@ -381,12 +364,6 @@ QPushButton:pressed {
            <layout class="QVBoxLayout" name="verticalLayout_10">
             <item>
              <widget class="QLabel" name="germanText">
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-                <bold>false</bold>
-               </font>
-              </property>
               <property name="text">
                <string>2</string>
               </property>
@@ -427,12 +404,6 @@ QPushButton:pressed {
            <layout class="QVBoxLayout" name="verticalLayout_11">
             <item>
              <widget class="QLabel" name="englishText">
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-                <bold>false</bold>
-               </font>
-              </property>
               <property name="text">
                <string>3</string>
               </property>
@@ -521,12 +492,6 @@ QPushButton:pressed {
         </item>
         <item>
          <widget class="QLabel" name="pinText">
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string>Voer uw PIN in</string>
           </property>
@@ -537,12 +502,6 @@ QPushButton:pressed {
         </item>
         <item>
          <widget class="QLabel" name="pin">
-          <property name="font">
-           <font>
-            <pointsize>72</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -579,11 +538,6 @@ QPushButton:pressed {
               <width>350</width>
               <height>86</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
             </property>
             <property name="text">
              <string/>
@@ -632,12 +586,6 @@ QPushButton:pressed {
             <height>150</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -680,11 +628,6 @@ QPushButton:pressed {
                 <height>86</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>1    Geld opnemen</string>
               </property>
@@ -704,11 +647,6 @@ QPushButton:pressed {
                 <height>86</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>4    Geld doneren</string>
               </property>
@@ -727,11 +665,6 @@ QPushButton:pressed {
                 <width>16777215</width>
                 <height>86</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
               </property>
               <property name="text">
                <string>7    Saldo opvragen</string>
@@ -814,11 +747,6 @@ QPushButton:pressed {
                 <height>86</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>€70 opnemen    6</string>
               </property>
@@ -850,11 +778,6 @@ QPushButton:pressed {
                 <width>16777215</width>
                 <height>86</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
               </property>
               <property name="text">
                <string>Uitloggen    #</string>
@@ -898,12 +821,6 @@ QPushButton:pressed {
             <height>150</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string>Selecteer het op te nemen bedrag</string>
           </property>
@@ -946,11 +863,6 @@ QPushButton:pressed {
                 <height>86</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>1    10 EUR</string>
               </property>
@@ -969,11 +881,6 @@ QPushButton:pressed {
                 <width>350</width>
                 <height>86</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
               </property>
               <property name="text">
                <string>4    20 EUR</string>
@@ -1000,11 +907,6 @@ QPushButton:pressed {
                 <width>350</width>
                 <height>86</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
               </property>
               <property name="text">
                <string>﹡    Afbreken</string>
@@ -1058,11 +960,6 @@ QPushButton:pressed {
                 <height>86</height>
                </size>
               </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>50 EUR    3</string>
               </property>
@@ -1081,11 +978,6 @@ QPushButton:pressed {
                 <width>350</width>
                 <height>86</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
               </property>
               <property name="text">
                <string>100 EUR    6</string>
@@ -1118,11 +1010,6 @@ QPushButton:pressed {
                 <width>350</width>
                 <height>86</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>-1</pointsize>
-               </font>
               </property>
               <property name="text">
                <string>Eigen invoer    #</string>
@@ -1189,12 +1076,6 @@ QPushButton:pressed {
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string>Voer het op te nemen bedrag in</string>
           </property>
@@ -1210,12 +1091,6 @@ QPushButton:pressed {
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
           </property>
           <property name="text">
            <string>    EUR</string>
@@ -1270,11 +1145,6 @@ QPushButton:pressed {
               <height>86</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string/>
             </property>
@@ -1306,11 +1176,6 @@ QPushButton:pressed {
               <width>350</width>
               <height>86</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
             </property>
             <property name="text">
              <string>Akkoord    #</string>
@@ -1345,12 +1210,6 @@ QPushButton:pressed {
             <width>16777215</width>
             <height>150</height>
            </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
           </property>
           <property name="text">
            <string>Selecteer uw biljetten</string>
@@ -1388,11 +1247,6 @@ QPushButton:pressed {
               <width>350</width>
               <height>86</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
             </property>
             <property name="text">
              <string>﹡    Afbreken</string>
@@ -1464,12 +1318,6 @@ QPushButton:pressed {
         </item>
         <item>
          <widget class="QLabel" name="donateText">
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string>Voer het te doneren bedrag in</string>
           </property>
@@ -1480,12 +1328,6 @@ QPushButton:pressed {
         </item>
         <item>
          <widget class="QLabel" name="donateAmount">
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string>    EUR</string>
           </property>
@@ -1523,11 +1365,6 @@ QPushButton:pressed {
               <height>86</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string/>
             </property>
@@ -1559,11 +1396,6 @@ QPushButton:pressed {
               <width>16777215</width>
               <height>86</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
             </property>
             <property name="text">
              <string>Akkoord    #</string>
@@ -1622,12 +1454,6 @@ QPushButton:pressed {
         </item>
         <item>
          <widget class="QLabel" name="balanceText">
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string>Uw saldo bedraagt</string>
           </property>
@@ -1638,12 +1464,6 @@ QPushButton:pressed {
         </item>
         <item>
          <widget class="QLabel" name="balanceAmount">
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -1694,11 +1514,6 @@ QPushButton:pressed {
               <height>86</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <pointsize>-1</pointsize>
-             </font>
-            </property>
             <property name="text">
              <string>Terugkeren    #</string>
             </property>
@@ -1715,12 +1530,6 @@ QPushButton:pressed {
         </property>
         <item>
          <widget class="QLabel" name="resultText">
-          <property name="font">
-           <font>
-            <pointsize>42</pointsize>
-            <bold>false</bold>
-           </font>
-          </property>
           <property name="text">
            <string/>
           </property>
