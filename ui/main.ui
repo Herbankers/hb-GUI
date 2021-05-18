@@ -143,7 +143,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1084,7 +1084,7 @@ QPushButton:pressed {
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>188</height>
+            <height>86</height>
            </size>
           </property>
          </spacer>
@@ -1139,7 +1139,7 @@ QPushButton:pressed {
            </font>
           </property>
           <property name="text">
-           <string>___ EUR</string>
+           <string>    EUR</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1158,47 +1158,6 @@ QPushButton:pressed {
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <spacer name="horizontalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="withdrawBills">
-            <property name="minimumSize">
-             <size>
-              <width>350</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>86</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>32</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Biljetkeuze    9</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
         <item>
          <spacer name="verticalSpacer_23">
@@ -1449,7 +1408,7 @@ QPushButton:pressed {
            </font>
           </property>
           <property name="text">
-           <string>___ EUR</string>
+           <string>    EUR</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

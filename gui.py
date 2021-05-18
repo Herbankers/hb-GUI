@@ -7,6 +7,12 @@ import sys
 from hbp import *
 from ui.main import *
 
+#
+# TODO
+# Client side countdown to automatically end session after hbp.HBP_TIMEOUT seconds
+# Keypad control
+#
+
 app = None
 hbp = None
 
@@ -48,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.donate.clicked.connect(self.donatePage)
         self.ui.balance.clicked.connect(self.balancePage)
         self.ui.quickWithdrawal.clicked.connect(functools.partial(self.withdraw, amount=7000))
-        self.ui.logout.clicked.connect(self.logout)
+        self.ui.logout.clicked.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
 
         # Withdraw page
         self.ui.withdrawAbort.clicked.connect(self.abort)
@@ -60,7 +66,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw manual page
         self.ui.withdrawManualAbort.clicked.connect(self.abort)
-        self.ui.withdrawBills.clicked.connect(self.withdrawBillsPage)
         self.ui.withdrawManualAccept.clicked.connect(self.withdrawFromKeybuf)
 
         # Withdraw bill selection page
@@ -106,6 +111,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.card_id = 'EBA8001B'
             self.iban = 'NL35HERB2932749274'
 
+            self.ui.pinText.setGraphicsEffect(None)
             self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
         elif self.ui.stack.currentIndex() == self.LOGIN_PAGE:
             # store the keyboard key in the keybuffer
@@ -128,11 +134,25 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.keyindex < PIN_LENGTH:
                 return
 
+            self.pinTextEff = QtWidgets.QGraphicsOpacityEffect()
+            self.ui.pinText.setGraphicsEffect(self.pinTextEff)
+            self.pinTextAnim = QPropertyAnimation(self.pinTextEff, b"opacity")
+            self.pinTextAnim.setStartValue(1.0)
+            self.pinTextAnim.setEndValue(0.0)
+            self.pinTextAnim.setDuration(300)
+            self.pinTextAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
+
+            self.pinAnim = QPropertyAnimation(self.ui.pin, b"pos")
+            self.pinAnim.setEndValue(QPoint(self.ui.pin.x(),
+                    self.ui.pin.y() - self.ui.pinText.height() / 2))
+            self.pinAnim.setDuration(300)
+            self.pinAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
+
             # short delay here to show that the 4th character has been entered
             self.timer = QTimer()
             self.timer.timeout.connect(self.login)
             self.timer.setSingleShot(True)
-            self.timer.start(500)
+            self.timer.start(700)
         elif self.ui.stack.currentIndex() in (self.WITHDRAW_MANUAL_PAGE, self.DONATE_PAGE):
             # store the keyboard key in the keybuffer
             key = self.getKeyFromEvent(event.key())
@@ -166,14 +186,11 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.ui.name.setText(self.tr('Welkom!'))
         elif reply == hbp.HBP_LOGIN_DENIED:
-            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Onjuiste PIN'), logout=False)
+            self.showResult(self.tr('Onjuiste PIN'), logout=False)
         elif reply == hbp.HBP_LOGIN_BLOCKED:
-            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Deze kaart is geblokkeerd'), logout=False)
+            self.showResult(self.tr('Deze kaart is geblokkeerd'), logout=False)
         else:
-            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Een interne fout is opgetreden'), logout=False)
+            self.showResult(self.tr('Een interne fout is opgetreden'), logout=False)
             print(reply)
 
     # FIXME replace these with lambda or something?
@@ -186,7 +203,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
     @QtCore.pyqtSlot()
-    def onFinish(self, text, logout=True):
+    def showResult(self, text, logout=True):
+        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText(text)
 
         # automatically logout after 2 seconds
@@ -234,7 +252,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def donatePage(self):
         self.ui.stack.setCurrentIndex(self.DONATE_PAGE)
 
-        self.keybuf = ['_'] * 3
+        self.keybuf = [' '] * 3
         self.keyindex = 0
         self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
 
@@ -244,9 +262,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.stack.setCurrentIndex(self.BALANCE_PAGE)
 
     @QtCore.pyqtSlot()
-    def logout(self):
+    def logout(self, doServerLogout=True):
         # we can check the reply, but this is really not needed, as it basically always succeeds
-        hbp.logout()
+        if doServerLogout:
+            hbp.logout()
 
         # we should clear all modified variables and labels here for security
         self.keybuf = []
@@ -269,9 +288,10 @@ class MainWindow(QtWidgets.QMainWindow):
         reply = hbp.transfer('', amount);
 
         if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
-            # TODO operate money dispenser here (on a separate thread ofc) instead of this delay
+            # TODO operate money dispenser here (on a separate thread ofc)
+
             self.timer = QTimer()
-            self.timer.timeout.connect(functools.partial(self.onFinish, text=self.tr('Nog een fijne dag!')))
+            self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
             self.timer.setSingleShot(True)
             self.timer.start(3000)
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
@@ -281,11 +301,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.timeout.connect(self.abort)
             self.timer.setSingleShot(True)
             self.timer.start(3000)
+        elif reply == hbp.HBP_REP_TERMINATED:
+            # server side session has expired
+            self.logout(doServerLogout=False)
         else:
-            # TODO handle session timeout
-            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.onFinish(self.tr('Een interne fout is opgetreden'))
-
+            self.showResult(self.tr('Een interne fout is opgetreden'))
             print(reply)
 
     #
@@ -295,14 +315,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def withdrawManualPage(self):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_MANUAL_PAGE)
 
-        self.keybuf = ['_'] * 3
+        self.keybuf = [' '] * 3
         self.keyindex = 0
         self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
 
     @QtCore.pyqtSlot()
     def withdrawFromKeybuf(self):
         try:
-            amount = int(''.join(self.keybuf).replace('_', '')) * 100
+            amount = int(''.join(self.keybuf).replace(' ', '')) * 100
         except ValueError:
             # nothing has been entered yet
             return
