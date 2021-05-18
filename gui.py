@@ -31,6 +31,8 @@ class MainWindow(QtWidgets.QMainWindow):
     BALANCE_PAGE = 7
     RESULT_PAGE = 8
 
+    MONOSPACE_HTML = '<font face="Fira Mono, DejaVu Sans Mono, Menlo, Consolas, Liberation Mono, Monaco, Lucida Console, monospace">'
+
     card_id = ''
     iban = ''
     keybuf = []
@@ -65,11 +67,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawManual.clicked.connect(self.withdrawManualPage)
 
         # Withdraw manual page
-        self.ui.withdrawManualAbort.clicked.connect(self.abort)
         self.ui.withdrawManualAccept.clicked.connect(self.withdrawFromKeybuf)
 
         # Withdraw bill selection page
-        self.ui.withdrawBillsAbort.clicked.connect(self.abort)
         # TODO
 
         # Donate page
@@ -112,13 +112,24 @@ class MainWindow(QtWidgets.QMainWindow):
             self.iban = 'NL35HERB2932749274'
 
             self.ui.pinText.setGraphicsEffect(None)
+            self.ui.pinAbort.setGraphicsEffect(None)
             self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
+            self.clearInput()
         elif self.ui.stack.currentIndex() == self.LOGIN_PAGE:
             # store the keyboard key in the keybuffer
             key = self.getKeyFromEvent(event.key())
             if key == None:
                 return
             self.keybuf.append(key)
+
+            # change the abort button to a correction button
+            try:
+                self.ui.pinAbort.clicked.disconnect()
+            except TypeError:
+                # idk why this happens
+                pass
+            self.ui.pinAbort.clicked.connect(self.clearInput)
+            self.ui.pinAbort.setText(self.tr('﹡    Correctie'))
 
             # update the pin dots on the display
             if self.keyindex == 0:
@@ -134,6 +145,12 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.keyindex < PIN_LENGTH:
                 return
 
+            # animate the fading of the pinAbort button
+            self.pinAbortEff = QtWidgets.QGraphicsOpacityEffect()
+            self.pinAbortEff.setOpacity(0.0)
+            self.ui.pinAbort.setGraphicsEffect(self.pinAbortEff)
+
+            # animate the fading of the pin entry help text
             self.pinTextEff = QtWidgets.QGraphicsOpacityEffect()
             self.ui.pinText.setGraphicsEffect(self.pinTextEff)
             self.pinTextAnim = QPropertyAnimation(self.pinTextEff, b"opacity")
@@ -142,9 +159,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.pinTextAnim.setDuration(300)
             self.pinTextAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
 
+            # animate the translation of the pin dots to the center of the screen
             self.pinAnim = QPropertyAnimation(self.ui.pin, b"pos")
-            self.pinAnim.setEndValue(QPoint(self.ui.pin.x(),
-                    self.ui.pin.y() - self.ui.pinText.height() / 2))
+            self.pinAnim.setEndValue(QPoint(self.ui.pin.x(), self.ui.pin.y() - int(self.ui.pinText.height() / 2)))
             self.pinAnim.setDuration(300)
             self.pinAnim.start(self.pinTextAnim.DeletionPolicy.DeleteWhenStopped)
 
@@ -164,18 +181,88 @@ class MainWindow(QtWidgets.QMainWindow):
             self.keybuf[self.keyindex] = key
             self.keyindex += 1
 
-            # write the updated amount to the display
-            self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
-            self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
+            if self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
+                # change the abort button to a correction button
+                self.ui.withdrawManualAbort.clicked.disconnect()
+                self.ui.withdrawManualAbort.clicked.connect(self.clearInput)
+                self.ui.withdrawManualAbort.setText(self.tr('﹡    Correctie'))
 
-    @QtCore.pyqtSlot()
+                # show the accept button
+                self.ui.withdrawManualAccept.show()
+
+                # write the updated amount to the display
+                self.ui.withdrawAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
+            else:
+                # change the abort button to a correction button
+                self.ui.donateAbort.clicked.disconnect()
+                self.ui.donateAbort.clicked.connect(self.clearInput)
+                self.ui.donateAbort.setText(self.tr('﹡    Correctie'))
+
+                # show the accept button
+                self.ui.donateAccept.show()
+
+                # write the updated amount to the display
+                self.ui.donateAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
+
+    @pyqtSlot()
+    def clearInput(self):
+        self.keyindex = 0
+
+        if self.ui.stack.currentIndex() == self.LOGIN_PAGE:
+            self.keybuf = []
+
+            # change the correction button back to an abort button
+            try:
+                self.ui.pinAbort.clicked.disconnect()
+            except TypeError:
+                # idk why this happens
+                pass
+            self.ui.pinAbort.clicked.connect(self.goHome)
+            self.ui.pinAbort.setText(self.tr('﹡    Afbreken'))
+
+            # clear the display
+            self.ui.pin.setText('')
+        elif self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
+            self.keybuf = [' '] * 3
+
+            # change the correction button back to an abort button
+            try:
+                self.ui.withdrawManualAbort.clicked.disconnect()
+            except TypeError:
+                # idk why this happens
+                pass
+            self.ui.withdrawManualAbort.clicked.connect(self.abort)
+            self.ui.withdrawManualAbort.setText(self.tr('﹡    Afbreken'))
+
+            # hide the accept button for now
+            self.ui.withdrawManualAccept.hide()
+
+            # clear the display
+            self.ui.withdrawAmount.setText(self.MONOSPACE_HTML + '&nbsp;&nbsp;&nbsp;</font> EUR')
+        elif self.ui.stack.currentIndex() == self.DONATE_PAGE:
+            self.keybuf = [' '] * 3
+
+            # change the correction button back to an abort button
+            try:
+                self.ui.donateAbort.clicked.disconnect()
+            except TypeError:
+                # happens only to withdrawManualAbort, but just in case
+                pass
+            self.ui.donateAbort.clicked.connect(self.abort)
+            self.ui.donateAbort.setText(self.tr('﹡    Afbreken'))
+
+            # hide the accept button for now
+            self.ui.donateAccept.hide()
+
+            # clear the display
+            self.ui.donateAmount.setText(self.MONOSPACE_HTML + '&nbsp;&nbsp;&nbsp;</font> EUR')
+
+    @pyqtSlot()
     def login(self):
         # TODO run on separate thread
         reply = hbp.login(self.card_id, self.iban, ''.join(self.keybuf))
 
-        self.ui.pin.setText('')
-        self.keybuf = []
-        self.keyindex = 0
+        self.clearInput()
 
         if reply == hbp.HBP_LOGIN_GRANTED:
             self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
@@ -194,15 +281,15 @@ class MainWindow(QtWidgets.QMainWindow):
             print(reply)
 
     # FIXME replace these with lambda or something?
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def abort(self):
         self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def goHome(self):
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def showResult(self, text, logout=True):
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText(text)
@@ -221,19 +308,19 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Card page
     #
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def dutch(self):
         app.removeTranslator(self.translator)
         self.ui.retranslateUi(self)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def german(self):
         app.removeTranslator(self.translator)
         self.translator.load("ts/de_DE.qm")
         app.installTranslator(self.translator)
         self.ui.retranslateUi(self)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def english(self):
         app.removeTranslator(self.translator)
         self.translator.load("ts/en_US.qm")
@@ -244,24 +331,22 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Main page
     #
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def withdrawPage(self):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_PAGE)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def donatePage(self):
         self.ui.stack.setCurrentIndex(self.DONATE_PAGE)
 
-        self.keybuf = [' '] * 3
-        self.keyindex = 0
-        self.ui.donateAmount.setText(''.join(self.keybuf) + ' EUR')
+        self.clearInput()
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def balancePage(self):
         self.ui.balanceAmount.setText(hbp.balance().replace('.', ',') + ' EUR')
         self.ui.stack.setCurrentIndex(self.BALANCE_PAGE)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def logout(self, doServerLogout=True):
         # we can check the reply, but this is really not needed, as it basically always succeeds
         if doServerLogout:
@@ -280,7 +365,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Withdraw page
     #
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def withdraw(self, amount):
         # start processing
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
@@ -311,15 +396,13 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Withdraw manual page
     #
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def withdrawManualPage(self):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_MANUAL_PAGE)
 
-        self.keybuf = [' '] * 3
-        self.keyindex = 0
-        self.ui.withdrawAmount.setText(''.join(self.keybuf) + ' EUR')
+        self.clearInput()
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def withdrawFromKeybuf(self):
         try:
             amount = int(''.join(self.keybuf).replace(' ', '')) * 100
@@ -332,7 +415,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Withdraw bill selection page
     #
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def withdrawBillsPage(self):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
 
@@ -341,7 +424,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Donate page
     #
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def donate(self):
         # TODO implement
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)

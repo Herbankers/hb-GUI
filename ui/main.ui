@@ -84,6 +84,7 @@ QPushButton:pressed {
 	border-bottom-left-radius: 8px;
 }
 
+#pinAbort,
 #withdrawAbort,
 #withdrawManualAbort,
 #withdrawBillsAbort,
@@ -143,7 +144,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -469,6 +470,22 @@ QPushButton:pressed {
          <number>0</number>
         </property>
         <item>
+         <spacer name="verticalSpacer_26">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>86</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -525,6 +542,47 @@ QPushButton:pressed {
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QPushButton" name="pinAbort">
+            <property name="minimumSize">
+             <size>
+              <width>350</width>
+              <height>86</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>350</width>
+              <height>86</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>32</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -1197,7 +1255,7 @@ QPushButton:pressed {
              </font>
             </property>
             <property name="text">
-             <string>﹡    Afbreken</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -1450,7 +1508,7 @@ QPushButton:pressed {
              </font>
             </property>
             <property name="text">
-             <string>﹡    Afbreken</string>
+             <string/>
             </property>
            </widget>
           </item>
