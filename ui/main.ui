@@ -504,7 +504,7 @@ QPushButton:pressed {
         <item>
          <widget class="QLabel" name="pin">
           <property name="text">
-           <string/>
+           <string> </string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
