@@ -151,6 +151,22 @@ QPushButton:pressed {
          <number>0</number>
         </property>
         <item>
+         <spacer name="verticalSpacer_14">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>116</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -250,6 +266,89 @@ QPushButton:pressed {
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <property name="spacing">
+           <number>16</number>
+          </property>
+          <property name="rightMargin">
+           <number>16</number>
+          </property>
+          <property name="bottomMargin">
+           <number>16</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="dutch">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="pixmap">
+             <pixmap>dutch.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="german">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="pixmap">
+             <pixmap>german.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="english">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="pixmap">
+             <pixmap>english.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -528,6 +627,22 @@ QPushButton:pressed {
          <number>0</number>
         </property>
         <item>
+         <spacer name="verticalSpacer_15">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>188</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <spacer name="verticalSpacer_9">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -714,6 +829,22 @@ QPushButton:pressed {
          <number>0</number>
         </property>
         <item>
+         <spacer name="verticalSpacer_16">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>86</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <spacer name="verticalSpacer_11">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -846,6 +977,22 @@ QPushButton:pressed {
         <property name="bottomMargin">
          <number>0</number>
         </property>
+        <item>
+         <spacer name="verticalSpacer_17">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>86</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <spacer name="verticalSpacer_13">
           <property name="orientation">
