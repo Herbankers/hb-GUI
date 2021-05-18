@@ -287,7 +287,7 @@ def main(argv):
     # empty input_souce means that we'll use the keyboard as input
     #  serial_port = ''
 
-    host = '127.0.0.1'
+    host = '145.24.222.242'
     port = 8420
 
     for opt, arg in opts:
