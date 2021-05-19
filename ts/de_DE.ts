@@ -4,7 +4,7 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="../gui.py" line="466" />
+      <location filename="../gui.py" line="465" />
       <location filename="../gui.py" line="101" />
       <source>Nog een fijne dag!</source>
       <translation>Einen schönen Tag noch!</translation>
@@ -19,45 +19,45 @@
     <message>
       <location filename="../ui/main.ui" line="0" />
       <location filename="../ui/main.ui" line="0" />
-      <location filename="../gui.py" line="335" />
-      <location filename="../gui.py" line="321" />
-      <location filename="../gui.py" line="310" />
+      <location filename="../gui.py" line="334" />
+      <location filename="../gui.py" line="320" />
+      <location filename="../gui.py" line="309" />
       <source>﹡    Afbreken</source>
       <translation>﹡    Abbrechen</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="359" />
+      <location filename="../gui.py" line="358" />
       <source>Welkom</source>
       <translation>Willkommen</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="361" />
+      <location filename="../gui.py" line="360" />
       <source>Welkom!</source>
       <translation>Willkommen!</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="363" />
+      <location filename="../gui.py" line="362" />
       <source>Onjuiste PIN</source>
       <translation>Falsche PIN</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="365" />
+      <location filename="../gui.py" line="364" />
       <source>Deze kaart is geblokkeerd</source>
       <translation>Diese Karte wurde gesperrt</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="480" />
-      <location filename="../gui.py" line="367" />
+      <location filename="../gui.py" line="479" />
+      <location filename="../gui.py" line="366" />
       <source>Een interne fout is opgetreden</source>
       <translation>Ein interner Fehler ist aufgetreten</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="459" />
+      <location filename="../gui.py" line="458" />
       <source>Een moment geduld...</source>
       <translation>Ein Moment der Geduld...</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="470" />
+      <location filename="../gui.py" line="469" />
       <source>Uw saldo is ontoereikend</source>
       <translation>Ihr Guthaben ist unzureichend</translation>
     </message>
