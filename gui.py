@@ -260,7 +260,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.donateAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
 
     # keypad input handler
-    @pyqtSlot()
+    @pyqtSlot(str)
     def keypadPress(self, data):
         self.keyHandler(data)
 
