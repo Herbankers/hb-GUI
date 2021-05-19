@@ -202,7 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.pin.setText('••••')
 
             self.keyindex += 1
-            if self.keyindex < PIN_LENGTH:
+            if self.keyindex < PIN_LENGTH or self.keyindex > PIN_LENGTH:
                 return
 
             # animate the fading of the loginAbort button
