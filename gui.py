@@ -260,7 +260,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.donateAmount.setText(self.MONOSPACE_HTML + ''.join(self.keybuf).replace(' ', '&nbsp;') + '</font> EUR')
 
     # keypad input handler
-    @pyqtSlot(str)
+    @pyqtSlot()
     def keypadPress(self, data):
         self.keyHandler(data)
 
@@ -302,7 +302,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.keyHandler(key)
 
     # either clear input from the key buffer or abort if the buffer is empty
-    @pyqtSlot(bool)
+    @pyqtSlot()
     def clearInput(self, abort=True):
         if self.ui.stack.currentIndex() == self.LOGIN_PAGE:
             if not abort or self.keyindex > 0:
@@ -378,7 +378,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def goHome(self):
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
-    @pyqtSlot(str, bool)
+    @pyqtSlot()
     def showResult(self, text, logout=True):
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText(text)
@@ -435,7 +435,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.balanceAmount.setText(hbp.balance().replace('.', ',') + ' EUR')
         self.ui.stack.setCurrentIndex(self.BALANCE_PAGE)
 
-    @pyqtSlot(bool)
+    @pyqtSlot()
     def logout(self, doServerLogout=True):
         # we can check the reply, but this is really not needed, as it basically always succeeds
         if doServerLogout:
@@ -454,7 +454,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Withdraw page
     #
-    @pyqtSlot(int)
+    @pyqtSlot()
     def withdraw(self, amount):
         # start processing
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
