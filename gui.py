@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets, uic
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import *
 import functools
 import getopt
@@ -79,6 +79,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.worker.cardScan.connect(self.cardScan)
 
             self.thread.start()
+
+        self.fullScrSc = QtGui.QShortcut(QtGui.QKeySequence.StandardKey.FullScreen, self)
+        self.fullScrSc.activated.connect(lambda: self.showNormal() if self.isFullScreen() else self.showFullScreen())
 
         # Card page
         self.card_menu = {
