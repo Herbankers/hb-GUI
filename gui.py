@@ -261,16 +261,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def keypadPress(self, data):
         self.keyHandler(data)
 
-
-    # keyboard input handler
-    def keyPressEvent(self, event):
-        key = self.getKeyFromEvent(event.key())
-        if key == None:
-            return
-
-        self.keyHandler(key)
-
-    # resolve the key event code to a character (only numbers are accepted)
+    # resolve the keyboard key event code to a character (only numbers are accepted)
     def getKeyFromEvent(self, key):
         if key == Qt.Key.Key_0:
             return '0'
@@ -299,8 +290,16 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             return None
 
+    # keyboard input handler
+    def keyPressEvent(self, event):
+        key = self.getKeyFromEvent(event.key())
+        if key == None:
+            return
+
+        self.keyHandler(key)
+
     # either clear input from the key buffer or abort if the buffer is empty
-    @pyqtSlot()
+    @pyqtSlot(bool)
     def clearInput(self, abort=True):
         if self.ui.stack.currentIndex() == self.LOGIN_PAGE:
             if not abort or self.keyindex > 0:
@@ -376,7 +375,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def goHome(self):
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
-    @pyqtSlot()
+    @pyqtSlot(str, bool)
     def showResult(self, text, logout=True):
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText(text)
@@ -433,7 +432,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.balanceAmount.setText(hbp.balance().replace('.', ',') + ' EUR')
         self.ui.stack.setCurrentIndex(self.BALANCE_PAGE)
 
-    @pyqtSlot()
+    @pyqtSlot(bool)
     def logout(self, doServerLogout=True):
         # we can check the reply, but this is really not needed, as it basically always succeeds
         if doServerLogout:
@@ -452,7 +451,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Withdraw page
     #
-    @pyqtSlot()
+    @pyqtSlot(int)
     def withdraw(self, amount):
         # start processing
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
