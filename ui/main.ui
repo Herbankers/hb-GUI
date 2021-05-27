@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1118</width>
-    <height>862</height>
+    <height>872</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -161,7 +161,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -504,7 +504,7 @@ QPushButton:pressed {
         <item>
          <widget class="QLabel" name="pin">
           <property name="text">
-           <string> </string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -865,7 +865,7 @@ QPushButton:pressed {
                </size>
               </property>
               <property name="text">
-               <string>1    10 EUR</string>
+               <string>1    5 EUR</string>
               </property>
              </widget>
             </item>
@@ -884,7 +884,7 @@ QPushButton:pressed {
                </size>
               </property>
               <property name="text">
-               <string>4    20 EUR</string>
+               <string>4    10 EUR</string>
               </property>
              </widget>
             </item>

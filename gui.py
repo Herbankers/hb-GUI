@@ -111,8 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw page
         self.withdraw_menu = {
-            '1': functools.partial(self.withdraw, amount=1000), '3': functools.partial(self.withdraw, amount=5000),
-            '4': functools.partial(self.withdraw, amount=2000), '6': functools.partial(self.withdraw, amount=10000),
+            '1': functools.partial(self.withdraw, amount=500), '3': functools.partial(self.withdraw, amount=5000),
+            '4': functools.partial(self.withdraw, amount=1000), '6': functools.partial(self.withdraw, amount=10000),
             '*': self.abort,                                    '#': self.withdrawManualPage
         }
         self.ui.withdrawOption0.clicked.connect(self.withdraw_menu['1'])
