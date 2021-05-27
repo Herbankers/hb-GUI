@@ -130,7 +130,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawManualAccept.clicked.connect(self.withdrawManual_menu['#'])
 
         # Withdraw bill selection page
-        # TODO
+        # self.withdrawBills_menu = {
+        #     '*': self.abort, '1':print("selected €5"),
+        #     '2': print("selected €10"), '3':print("selected €50"),
+        #     '#': print("selected bills")
+        # }
+
+        # self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
+        # self.ui.selectFiveBill.clicked.connect(self.withdrawBills_menu['1'])
+        # self.ui.selectTenBill.clicked.connect(self.withdrawBills_menu['2'])
+        # self.ui.selectFifthyBill.clicked.connect(self.withdrawBills_menu['3'])
+        # self.ui.withdrawBillsAccept.clicked.connect(self.withdrawBills_menu['#'])
 
         # Donate page
         self.donate_menu = {
@@ -499,7 +509,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # nothing has been entered yet
             return
 
-        self.withdraw(amount)
+        self.withdrawBillsPage() #withdraw(amount)
 
     #
     # Withdraw bill selection page
