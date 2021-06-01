@@ -111,8 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw page
         self.withdraw_menu = {
-            '1': functools.partial(self.withdraw, amount=500), '3': functools.partial(self.withdraw, amount=5000),
-            '4': functools.partial(self.withdraw, amount=1000), '6': functools.partial(self.withdraw, amount=10000),
+            '1': functools.partial(self.withdrawBillsPage, amount =500), '3': functools.partial(self.withdrawBillsPage, amount=5000),
+            '4': functools.partial(self.withdrawBillsPage, amount=1000), '6': functools.partial(self.withdrawBillsPage, amount=10000),
             '*': self.abort,                                    '#': self.withdrawManualPage
         }
         self.ui.withdrawOption0.clicked.connect(self.withdraw_menu['1'])
@@ -130,13 +130,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawManualAccept.clicked.connect(self.withdrawManual_menu['#'])
 
         # Withdraw bill selection page
-        # self.withdrawBills_menu = {
-        #     '*': self.abort, '1':print("selected €5"),
-        #     '2': print("selected €10"), '3':print("selected €50"),
-        #     '#': print("selected bills")
-        # }
+        self.withdrawBills_menu = {
+            '*': self.abort, '#': functools.partial(self.withdraw)
+        }
 
-        # self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
+        self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
         # self.ui.selectFiveBill.clicked.connect(self.withdrawBills_menu['1'])
         # self.ui.selectTenBill.clicked.connect(self.withdrawBills_menu['2'])
         # self.ui.selectFifthyBill.clicked.connect(self.withdrawBills_menu['3'])
@@ -161,6 +159,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.MAIN_PAGE: self.main_menu,
             self.WITHDRAW_PAGE: self.withdraw_menu,
             self.WITHDRAW_MANUAL_PAGE: self.withdrawManual_menu,
+            self.WITHDRAW_BILLS_PAGE: self.withdrawBills_menu,
             self.DONATE_PAGE: self.donate_menu,
             self.BALANCE_PAGE: self.balance_menu
         }
@@ -509,15 +508,94 @@ class MainWindow(QtWidgets.QMainWindow):
             # nothing has been entered yet
             return
 
-        self.withdrawBillsPage() #withdraw(amount)
+        self.withdrawBillsPage(amount) #withdraw(amount)
 
     #
     # Withdraw bill selection page
     #
     @pyqtSlot()
-    def withdrawBillsPage(self):
+    def withdrawBillsPage(self,amount):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
-
+        if amount < 500:
+            print("no suitable amount:",amount)
+            self.ui.fiveEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFive.setEnabled(False)
+            self.ui.btnPlusFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFive.setEnabled(False)
+            self.ui.btnMinFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.tenEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTen.setEnabled(False)
+            self.ui.btnPlusTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTen.setEnabled(False)
+            self.ui.btnMinTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFifthy.setEnabled(False)
+            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFifthy.setEnabled(False)
+            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount == 500 and amount < 1000:
+            print("5 bill",amount)
+            self.ui.fiveEuroText.setStyleSheet(None)
+            self.ui.amountBillsFive.setStyleSheet(None)
+            self.ui.btnPlusFive.setEnabled(True)
+            self.ui.btnPlusFive.setStyleSheet(None)
+            self.ui.btnMinFive.setEnabled(True)
+            self.ui.btnMinFive.setStyleSheet(None)
+            self.ui.tenEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTen.setEnabled(False)
+            self.ui.btnPlusTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTen.setEnabled(False)
+            self.ui.btnMinTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFifthy.setEnabled(False)
+            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFifthy.setEnabled(False)
+            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount <= 1000 and amount > 500:
+            print("10 bill",amount)
+            self.ui.fiveEuroText.setStyleSheet(None)
+            self.ui.amountBillsFive.setStyleSheet(None)
+            self.ui.btnPlusFive.setEnabled(True)
+            self.ui.btnPlusFive.setStyleSheet(None)
+            self.ui.btnMinFive.setEnabled(True)
+            self.ui.btnMinFive.setStyleSheet(None)
+            self.ui.tenEuroText.setStyleSheet(None)
+            self.ui.amountBillsTen.setStyleSheet(None)
+            self.ui.btnPlusTen.setEnabled(True)
+            self.ui.btnPlusTen.setStyleSheet(None)
+            self.ui.btnMinTen.setEnabled(True)
+            self.ui.btnMinTen.setStyleSheet(None)
+            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFifthy.setEnabled(False)
+            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFifthy.setEnabled(False)
+            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount > 1000:
+            print("10+ bill",amount)
+            self.ui.fiveEuroText.setStyleSheet(None)
+            self.ui.amountBillsFive.setStyleSheet(None)
+            self.ui.btnPlusFive.setEnabled(True)
+            self.ui.btnPlusFive.setStyleSheet(None)
+            self.ui.btnMinFive.setEnabled(True)
+            self.ui.btnMinFive.setStyleSheet(None)
+            self.ui.tenEuroText.setStyleSheet(None)
+            self.ui.amountBillsTen.setStyleSheet(None)
+            self.ui.btnPlusTen.setEnabled(True)
+            self.ui.btnPlusTen.setStyleSheet(None)
+            self.ui.btnMinTen.setEnabled(True)
+            self.ui.btnMinTen.setStyleSheet(None)
+            self.ui.fifthyEuroText.setStyleSheet(None)
+            self.ui.amountBillsFifthy.setStyleSheet(None)
+            self.ui.btnPlusFifthy.setEnabled(True)
+            self.ui.btnPlusFifthy.setStyleSheet(None)
+            self.ui.btnMinFifthy.setEnabled(True)
+            self.ui.btnMinFifthy.setStyleSheet(None)
         # TODO implement
 
     #
@@ -550,7 +628,7 @@ def main(argv):
         sys.exit(1)
 
     # empty input_souce means that we'll use only the keyboard and mouse as input
-    serial_port = ''
+    serial_port = 'COM5'
 
     host = '145.24.222.242'
     port = 8420
