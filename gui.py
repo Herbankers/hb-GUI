@@ -134,7 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw bill selection page
         self.withdrawBills_menu = {
-            '*': self.abort, '#': functools.partial(self.withdraw, amount = 1000),
+            '*': self.abort, '#': self.donate,
             '1': self.select1, '2': self.deselect1,
             '3': self.select2, '4': self.deselect2,
             '5': self.select3, '6': self.deselect3
