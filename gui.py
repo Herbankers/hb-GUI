@@ -59,6 +59,9 @@ class MainWindow(QtWidgets.QMainWindow):
     iban = ''
     keybuf = []
     keyindex = 0
+    counter5 = 0
+    counter10 = 0
+    counter50 = 0
 
     translator = QTranslator()
 
@@ -131,14 +134,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw bill selection page
         self.withdrawBills_menu = {
-            '*': self.abort, '#': functools.partial(self.withdraw)
+            '*': self.abort, '#': functools.partial(self.withdraw, amount = 1000),
+            '1': self.select1, '2': self.deselect1,
+            '3': self.select2, '4': self.deselect2,
+            '5': self.select3, '6': self.deselect3
         }
 
         self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
-        # self.ui.selectFiveBill.clicked.connect(self.withdrawBills_menu['1'])
-        # self.ui.selectTenBill.clicked.connect(self.withdrawBills_menu['2'])
-        # self.ui.selectFifthyBill.clicked.connect(self.withdrawBills_menu['3'])
-        # self.ui.withdrawBillsAccept.clicked.connect(self.withdrawBills_menu['#'])
+        self.ui.withdrawBillsAccept.clicked.connect(self.withdrawBills_menu['#'])
 
         # Donate page
         self.donate_menu = {
@@ -382,6 +385,9 @@ class MainWindow(QtWidgets.QMainWindow):
     @pyqtSlot()
     def abort(self):
         self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
+        self.counter5 = 0
+        self.counter10 = 0
+        self.counter50 = 0
 
     @pyqtSlot()
     def goHome(self):
@@ -453,6 +459,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # we should clear all modified variables and labels here for security
         self.keybuf = []
         self.keyindex = 0
+        self.counter5 = 0
+        self.counter10 = 0
+        self.counter50 = 0
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
@@ -517,7 +526,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def withdrawBillsPage(self,amount):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
         if amount < 500:
-            print("no suitable amount:",amount)
             self.ui.fiveEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
             self.ui.amountBillsFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
             self.ui.btnPlusFive.setEnabled(False)
@@ -536,8 +544,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
             self.ui.btnMinFifthy.setEnabled(False)
             self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-        if amount == 500 and amount < 1000:
-            print("5 bill",amount)
+        if amount == 500:
             self.ui.fiveEuroText.setStyleSheet(None)
             self.ui.amountBillsFive.setStyleSheet(None)
             self.ui.btnPlusFive.setEnabled(True)
@@ -556,8 +563,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
             self.ui.btnMinFifthy.setEnabled(False)
             self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-        if amount <= 1000 and amount > 500:
-            print("10 bill",amount)
+        if amount > 500 and amount < 5000:
             self.ui.fiveEuroText.setStyleSheet(None)
             self.ui.amountBillsFive.setStyleSheet(None)
             self.ui.btnPlusFive.setEnabled(True)
@@ -576,8 +582,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
             self.ui.btnMinFifthy.setEnabled(False)
             self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-        if amount > 1000:
-            print("10+ bill",amount)
+        if amount >= 5000:
             self.ui.fiveEuroText.setStyleSheet(None)
             self.ui.amountBillsFive.setStyleSheet(None)
             self.ui.btnPlusFive.setEnabled(True)
@@ -596,7 +601,40 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusFifthy.setStyleSheet(None)
             self.ui.btnMinFifthy.setEnabled(True)
             self.ui.btnMinFifthy.setStyleSheet(None)
-        # TODO implement
+        # TODO implement dispense bills
+
+    @pyqtSlot()
+    def select1(self):
+        # print(self.counter5)
+        self.counter5 = self.counter5 + 1
+        self.ui.amountBillsFive.setText(f"Aantal geselcteerd: {self.counter5}")
+    
+    @pyqtSlot()
+    def select2(self):
+        # print(self.counter10)
+        self.counter10 = self.counter10 + 1
+        self.ui.amountBillsTen.setText(f"Aantal geselcteerd: {self.counter10}")
+
+    @pyqtSlot()
+    def select3(self):
+        # print(self.counter50)
+        self.counter50 = self.counter50 + 1
+        self.ui.amountBillsFifthy.setText(f"Aantal geselcteerd: {self.counter50}")
+
+    @pyqtSlot()
+    def deselect1(self):
+        self.counter5 = self.counter5 -1
+        self.ui.amountBillsFive.setText(f"Aantal geselcteerd: {self.counter5}")
+    
+    @pyqtSlot()
+    def deselect2(self):
+        self.counter10 = self.counter10 - 1
+        self.ui.amountBillsTen.setText(f"Aantal geselcteerd: {self.counter10}")
+
+    @pyqtSlot()
+    def deselect3(self):
+        self.counter50 = self.counter50 - 1
+        self.ui.amountBillsFifthy.setText(f"Aantal geselcteerd: {self.counter50}")
 
     #
     # Donate page
@@ -658,7 +696,7 @@ def main(argv):
     app = QtWidgets.QApplication(sys.argv)
 
     win = MainWindow()
-    win.show()
+    win.showMaximized()
     sys.exit(app.exec())
 
 if __name__ == "__main__":

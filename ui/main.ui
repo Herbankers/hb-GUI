@@ -1277,7 +1277,7 @@ QPushButton:pressed {
              </font>
             </property>
             <property name="text">
-             <string>Aantal geselecteerd: </string>
+             <string>Aantal geselecteerd: 0</string>
             </property>
            </widget>
           </item>
@@ -1292,7 +1292,7 @@ QPushButton:pressed {
              </font>
             </property>
             <property name="text">
-             <string>Aantal geselecteerd:</string>
+             <string>Aantal geselecteerd: 0</string>
             </property>
            </widget>
           </item>
@@ -1307,7 +1307,7 @@ QPushButton:pressed {
              </font>
             </property>
             <property name="text">
-             <string>Aantal geselecteerd:</string>
+             <string>Aantal geselecteerd: 0</string>
             </property>
            </widget>
           </item>
