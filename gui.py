@@ -61,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
     keyindex = 0
     counter5 = 0
     counter10 = 0
-    counter50 = 0
+    counter20 = 0
 
     translator = QTranslator()
 
@@ -387,7 +387,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
         self.counter5 = 0
         self.counter10 = 0
-        self.counter50 = 0
+        self.counter20 = 0
 
     @pyqtSlot()
     def goHome(self):
@@ -461,7 +461,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.keyindex = 0
         self.counter5 = 0
         self.counter10 = 0
-        self.counter50 = 0
+        self.counter20 = 0
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
@@ -538,12 +538,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
             self.ui.btnMinTen.setEnabled(False)
             self.ui.btnMinTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
-            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
-            self.ui.btnPlusFifthy.setEnabled(False)
-            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-            self.ui.btnMinFifthy.setEnabled(False)
-            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.twentyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTwenty.setEnabled(False)
+            self.ui.btnPlusTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTwenty.setEnabled(False)
+            self.ui.btnMinTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
         if amount == 500:
             self.ui.fiveEuroText.setStyleSheet(None)
             self.ui.amountBillsFive.setStyleSheet(None)
@@ -557,13 +557,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
             self.ui.btnMinTen.setEnabled(False)
             self.ui.btnMinTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
-            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
-            self.ui.btnPlusFifthy.setEnabled(False)
-            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-            self.ui.btnMinFifthy.setEnabled(False)
-            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-        if amount > 500 and amount < 5000:
+            self.ui.twentyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTwenty.setEnabled(False)
+            self.ui.btnPlusTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTwenty.setEnabled(False)
+            self.ui.btnMinTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount > 500 and amount < 2000:
             self.ui.fiveEuroText.setStyleSheet(None)
             self.ui.amountBillsFive.setStyleSheet(None)
             self.ui.btnPlusFive.setEnabled(True)
@@ -576,13 +576,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusTen.setStyleSheet(None)
             self.ui.btnMinTen.setEnabled(True)
             self.ui.btnMinTen.setStyleSheet(None)
-            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
-            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
-            self.ui.btnPlusFifthy.setEnabled(False)
-            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-            self.ui.btnMinFifthy.setEnabled(False)
-            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
-        if amount >= 5000:
+            self.ui.twentyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTwenty.setEnabled(False)
+            self.ui.btnPlusTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTwenty.setEnabled(False)
+            self.ui.btnMinTwenty.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount >= 2000:
             self.ui.fiveEuroText.setStyleSheet(None)
             self.ui.amountBillsFive.setStyleSheet(None)
             self.ui.btnPlusFive.setEnabled(True)
@@ -595,12 +595,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnPlusTen.setStyleSheet(None)
             self.ui.btnMinTen.setEnabled(True)
             self.ui.btnMinTen.setStyleSheet(None)
-            self.ui.fifthyEuroText.setStyleSheet(None)
-            self.ui.amountBillsFifthy.setStyleSheet(None)
-            self.ui.btnPlusFifthy.setEnabled(True)
-            self.ui.btnPlusFifthy.setStyleSheet(None)
-            self.ui.btnMinFifthy.setEnabled(True)
-            self.ui.btnMinFifthy.setStyleSheet(None)
+            self.ui.twentyEuroText.setStyleSheet(None)
+            self.ui.amountBillsTwenty.setStyleSheet(None)
+            self.ui.btnPlusTwenty.setEnabled(True)
+            self.ui.btnPlusTwenty.setStyleSheet(None)
+            self.ui.btnMinTwenty.setEnabled(True)
+            self.ui.btnMinTwenty.setStyleSheet(None)
         # TODO implement dispense bills
 
     @pyqtSlot()
@@ -617,9 +617,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def select3(self):
-        # print(self.counter50)
-        self.counter50 = self.counter50 + 1
-        self.ui.amountBillsFifthy.setText(f"Aantal geselcteerd: {self.counter50}")
+        # print(self.counter20)
+        self.counter20 = self.counter20 + 1
+        self.ui.amountBillsTwenty.setText(f"Aantal geselcteerd: {self.counter20}")
 
     @pyqtSlot()
     def deselect1(self):
@@ -633,8 +633,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def deselect3(self):
-        self.counter50 = self.counter50 - 1
-        self.ui.amountBillsFifthy.setText(f"Aantal geselcteerd: {self.counter50}")
+        self.counter20 = self.counter20 - 1
+        self.ui.amountBillsTwenty.setText(f"Aantal geselcteerd: {self.counter20}")
 
     #
     # Donate page

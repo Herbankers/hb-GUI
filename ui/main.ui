@@ -1222,7 +1222,25 @@ QPushButton:pressed {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="fiveEuroText">
+            <property name="font">
+             <font>
+              <family>Helvetica Neue</family>
+              <pointsize>50</pointsize>
+              <weight>25</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>€5 EUR</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
            <spacer name="verticalSpacer_27">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1235,38 +1253,7 @@ QPushButton:pressed {
             </property>
            </spacer>
           </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="fifthyEuroText">
-            <property name="font">
-             <font>
-              <family>Helvetica Neue</family>
-              <pointsize>50</pointsize>
-              <weight>25</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>€50 EUR</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="6" column="2">
-           <spacer name="verticalSpacer_25">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="5" column="2">
            <widget class="QLabel" name="amountBillsTen">
             <property name="font">
              <font>
@@ -1281,8 +1268,8 @@ QPushButton:pressed {
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="amountBillsFive">
+          <item row="6" column="3">
+           <widget class="QLabel" name="amountBillsTwenty">
             <property name="font">
              <font>
               <family>Helvetica Neue</family>
@@ -1296,8 +1283,81 @@ QPushButton:pressed {
             </property>
            </widget>
           </item>
-          <item row="5" column="3">
-           <widget class="QLabel" name="amountBillsFifthy">
+          <item row="7" column="2">
+           <spacer name="verticalSpacer_25">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QPushButton" name="btnPlusFive">
+              <property name="text">
+               <string>+ [1]</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnMinFive">
+              <property name="text">
+               <string>- [2]</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QPushButton" name="btnPlusTen">
+              <property name="text">
+               <string>+ [3]</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnMinTen">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>- [4]</string>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="twentyEuroText">
+            <property name="font">
+             <font>
+              <family>Helvetica Neue</family>
+              <pointsize>50</pointsize>
+              <weight>25</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>€20 EUR</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="amountBillsFive">
             <property name="font">
              <font>
               <family>Helvetica Neue</family>
@@ -1338,35 +1398,17 @@ QPushButton:pressed {
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="fiveEuroText">
-            <property name="font">
-             <font>
-              <family>Helvetica Neue</family>
-              <pointsize>50</pointsize>
-              <weight>25</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>€5 EUR</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
+          <item row="4" column="3">
            <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
-             <widget class="QPushButton" name="btnPlusFifthy">
+             <widget class="QPushButton" name="btnPlusTwenty">
               <property name="text">
                <string>+ [5]</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btnMinFifthy">
+             <widget class="QPushButton" name="btnMinTwenty">
               <property name="text">
                <string>- [6]</string>
               </property>
@@ -1374,47 +1416,59 @@ QPushButton:pressed {
             </item>
            </layout>
           </item>
-          <item row="3" column="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_10">
-            <item>
-             <widget class="QPushButton" name="btnPlusTen">
-              <property name="text">
-               <string>+ [3]</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnMinTen">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>- [4]</string>
-              </property>
-              <property name="flat">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="1" column="0">
+           <widget class="QLabel" name="noOfBills5Text">
+            <property name="font">
+             <font>
+              <family>Helvetica Neue</family>
+              <pointsize>12</pointsize>
+              <weight>25</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Aantal biljetten aanwezig: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
-          <item row="3" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_11">
-            <item>
-             <widget class="QPushButton" name="btnPlusFive">
-              <property name="text">
-               <string>+ [1]</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnMinFive">
-              <property name="text">
-               <string>- [2]</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="1" column="2">
+           <widget class="QLabel" name="noOfBills10Text">
+            <property name="font">
+             <font>
+              <family>Helvetica Neue</family>
+              <pointsize>12</pointsize>
+              <weight>25</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Aantal biljetten aanwezig: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLabel" name="noOfBills20Text">
+            <property name="font">
+             <font>
+              <family>Helvetica Neue</family>
+              <pointsize>12</pointsize>
+              <weight>25</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Aantal biljetten aanwezig: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
