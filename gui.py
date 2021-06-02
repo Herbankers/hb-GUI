@@ -388,6 +388,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.counter5 = 0
         self.counter10 = 0
         self.counter20 = 0
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
 
     @pyqtSlot()
     def goHome(self):
@@ -465,6 +468,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
 
         self.dutch()
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
@@ -643,7 +649,7 @@ class MainWindow(QtWidgets.QMainWindow):
         c = self.counter20*2000
         amount = a+b+c
         print(amount)
-        self.withdraw(amount)
+        # self.withdraw(amount)
         # Send bill selection to arduino
 
     #
