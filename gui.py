@@ -134,7 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw bill selection page
         self.withdrawBills_menu = {
-            '*': self.abort, '#': self.donate,
+            '*': self.abort, '#': self.checkout,
             '1': self.select1, '2': self.deselect1,
             '3': self.select2, '4': self.deselect2,
             '5': self.select3, '6': self.deselect3
@@ -607,34 +607,44 @@ class MainWindow(QtWidgets.QMainWindow):
     def select1(self):
         # print(self.counter5)
         self.counter5 = self.counter5 + 1
-        self.ui.amountBillsFive.setText(f"Aantal geselcteerd: {self.counter5}")
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: {self.counter5}")
     
     @pyqtSlot()
     def select2(self):
         # print(self.counter10)
         self.counter10 = self.counter10 + 1
-        self.ui.amountBillsTen.setText(f"Aantal geselcteerd: {self.counter10}")
+        self.ui.amountBillsTen.setText(f"Aantal geselecteerd: {self.counter10}")
 
     @pyqtSlot()
     def select3(self):
         # print(self.counter20)
         self.counter20 = self.counter20 + 1
-        self.ui.amountBillsTwenty.setText(f"Aantal geselcteerd: {self.counter20}")
+        self.ui.amountBillsTwenty.setText(f"Aantal geselecteerd: {self.counter20}")
 
     @pyqtSlot()
     def deselect1(self):
         self.counter5 = self.counter5 -1
-        self.ui.amountBillsFive.setText(f"Aantal geselcteerd: {self.counter5}")
+        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: {self.counter5}")
     
     @pyqtSlot()
     def deselect2(self):
         self.counter10 = self.counter10 - 1
-        self.ui.amountBillsTen.setText(f"Aantal geselcteerd: {self.counter10}")
+        self.ui.amountBillsTen.setText(f"Aantal geselecteerd: {self.counter10}")
 
     @pyqtSlot()
     def deselect3(self):
         self.counter20 = self.counter20 - 1
-        self.ui.amountBillsTwenty.setText(f"Aantal geselcteerd: {self.counter20}")
+        self.ui.amountBillsTwenty.setText(f"Aantal geselecteerd: {self.counter20}")
+
+    @pyqtSlot()
+    def checkout(self):
+        a = self.counter5*500
+        b = self.counter10*1000
+        c = self.counter20*2000
+        amount = a+b+c
+        print(amount)
+        self.withdraw(amount)
+        # Send bill selection to arduino
 
     #
     # Donate page
