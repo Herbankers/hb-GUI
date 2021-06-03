@@ -648,8 +648,9 @@ class MainWindow(QtWidgets.QMainWindow):
         b = self.counter10*1000
         c = self.counter20*2000
         amount = a+b+c
+        sendString = f"{self.counter5},{self.counter10},{self.counter20}\0"
         print(amount)
-        # self.withdraw(amount)
+        self.withdraw(amount)
         # Send bill selection to arduino
 
     #
@@ -682,7 +683,7 @@ def main(argv):
         sys.exit(1)
 
     # empty input_souce means that we'll use only the keyboard and mouse as input
-    serial_port = 'COM5'
+    serial_port = ''
 
     host = '145.24.222.242'
     port = 8420
