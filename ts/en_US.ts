@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
+<TS version="2.1" language="en_US" sourcelanguage="nl">
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="../gui.py" line="727" />
-      <location filename="../gui.py" line="720" />
-      <location filename="../gui.py" line="127" />
+      <location filename="../gui.py" line="599" />
+      <location filename="../gui.py" line="592" />
+      <location filename="../gui.py" line="122" />
       <source>Nog een fijne dag!</source>
-      <translation type="unfinished" />
+      <translation>Have a nice day!</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="322" />
-      <location filename="../gui.py" line="313" />
-      <location filename="../gui.py" line="263" />
+      <location filename="../gui.py" line="308" />
+      <location filename="../gui.py" line="299" />
+      <location filename="../gui.py" line="249" />
       <source>﹡    Correctie</source>
-      <translation type="unfinished" />
+      <translation>﹡    Clear</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <location filename="../ui/main.ui" line="0" />
-      <location filename="../gui.py" line="405" />
       <location filename="../gui.py" line="391" />
-      <location filename="../gui.py" line="380" />
+      <location filename="../gui.py" line="377" />
+      <location filename="../gui.py" line="366" />
       <source>﹡    Afbreken</source>
-      <translation type="unfinished" />
+      <translation>﹡    Abort</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="429" />
+      <location filename="../gui.py" line="415" />
       <source>Welkom</source>
-      <translation type="unfinished" />
+      <translation>Welcome</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="431" />
+      <location filename="../gui.py" line="417" />
       <source>Welkom!</source>
-      <translation type="unfinished" />
+      <translation>Welcome!</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="433" />
+      <location filename="../gui.py" line="419" />
       <source>Onjuiste PIN</source>
-      <translation type="unfinished" />
+      <translation>Incorrect PIN</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="435" />
+      <location filename="../gui.py" line="421" />
       <source>Deze kaart is geblokkeerd</source>
-      <translation type="unfinished" />
+      <translation>This card is blocked</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="545" />
-      <location filename="../gui.py" line="437" />
+      <location filename="../gui.py" line="525" />
+      <location filename="../gui.py" line="423" />
       <source>Een interne fout is opgetreden</source>
-      <translation type="unfinished" />
+      <translation>An internal error has occurred</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="523" />
+      <location filename="../gui.py" line="503" />
       <source>Een moment geduld...</source>
-      <translation type="unfinished" />
+      <translation>One moment please...</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="535" />
+      <location filename="../gui.py" line="515" />
       <source>Uw saldo is ontoereikend</source>
-      <translation type="unfinished" />
+      <translation>Your balance is insufficient</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="709" />
+      <location filename="../gui.py" line="581" />
       <source>Wilt u een bon?</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../gui.py" line="710" />
+      <location filename="../gui.py" line="582" />
       <source>﹡    Nee</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../gui.py" line="711" />
+      <location filename="../gui.py" line="583" />
       <source>Ja    #</source>
       <translation type="unfinished" />
     </message>
@@ -81,181 +81,132 @@
       <location filename="../ui/main.ui" line="0" />
       <location filename="../ui/main.ui" line="0" />
       <source>INGrid</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Houdt uw kaart voor de lezer</source>
-      <translation type="unfinished" />
+      <translation>Hold your card in front of the reader</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>1</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>2</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>3</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Voer uw PIN in</source>
-      <translation type="unfinished" />
+      <translation>Please enter your PIN</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>1    Geld opnemen</source>
-      <translation type="unfinished" />
+      <translation>1    Cash withdrawal</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>4    Geld doneren</source>
-      <translation type="unfinished" />
+      <translation>4    Donate</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>7    Saldo opvragen</source>
-      <translation type="unfinished" />
+      <translation>7    Balance inquiry</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>€70 opnemen    6</source>
-      <translation type="unfinished" />
+      <translation>Withdraw €70    6</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Uitloggen    #</source>
-      <translation type="unfinished" />
+      <translation>Logout    #</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Selecteer het op te nemen bedrag</source>
-      <translation type="unfinished" />
+      <translation>Select the amount to withdraw</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
-      <source>1    5 EUR</source>
-      <translation type="unfinished" />
+      <source>1    10 EUR</source>
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
-      <source>4    10 EUR</source>
-      <translation type="unfinished" />
+      <source>4    20 EUR</source>
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>50 EUR    3</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>100 EUR    6</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Eigen invoer    #</source>
-      <translation type="unfinished" />
+      <translation>Custom amount    #</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Voer het op te nemen bedrag in</source>
-      <translation type="unfinished" />
+      <translation>Enter the amount to withdraw</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <location filename="../ui/main.ui" line="0" />
       <source>    EUR</source>
-      <translation type="unfinished" />
+      <translation />
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <location filename="../ui/main.ui" line="0" />
       <source>Akkoord    #</source>
-      <translation type="unfinished" />
+      <translation>Accept    #</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
-      <source>Selecteer uw biljetten </source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>€50 EUR</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <location filename="../ui/main.ui" line="0" />
-      <location filename="../ui/main.ui" line="0" />
-      <source>Aantal geselecteerd: 0</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>€10 EUR</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>€5 EUR</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>+ [5]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>- [6]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>+ [3]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>- [4]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>+ [1]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>- [2]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="../ui/main.ui" line="0" />
-      <source>               Akkoord   #</source>
-      <translation type="unfinished" />
+      <source>Selecteer uw biljetten</source>
+      <translation>Select your bill mix</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Voer het te doneren bedrag in</source>
-      <translation type="unfinished" />
+      <translation>Please enter the amount to withdraw</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Uw saldo bedraagt</source>
-      <translation type="unfinished" />
+      <translation>Your balance is</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <source>Terugkeren    #</source>
-      <translation type="unfinished" />
+      <translation>Return    #</translation>
+    </message>
+    <message>
+      <source>Biljetkeuze    9</source>
+      <translation type="vanished">Select Bills    9</translation>
+    </message>
+    <message>
+      <source>€70 opnemen    3</source>
+      <translation type="vanished">Withdraw €70    3</translation>
     </message>
   </context>
 </TS>
