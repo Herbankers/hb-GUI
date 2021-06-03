@@ -67,6 +67,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     MONOSPACE_HTML = '<font face="Fira Mono, DejaVu Sans Mono, Menlo, Consolas, Liberation Mono, Monaco, Lucida Console, monospace">'
 
+    # ???
+    counter5 = 0
+    counter10 = 0
+    counter50 = 0
+
     translator = QTranslator()
 
     card_id     = ''
@@ -129,8 +134,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw page
         self.withdraw_menu = {
-            '1': functools.partial(self.withdraw, amount=1000), '3': functools.partial(self.withdraw, amount=5000),
-            '4': functools.partial(self.withdraw, amount=2000), '6': functools.partial(self.withdraw, amount=10000),
+            '1': functools.partial(self.withdrawBillsPage, amount =500), '3': functools.partial(self.withdrawBillsPage, amount=5000),
+            '4': functools.partial(self.withdrawBillsPage, amount=1000), '6': functools.partial(self.withdrawBillsPage, amount=10000),
             '*': self.abort,                                    '#': self.withdrawManualPage
         }
         self.ui.withdrawOption0.clicked.connect(self.withdraw_menu['1'])
@@ -148,7 +153,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawManualAccept.clicked.connect(self.withdrawManual_menu['#'])
 
         # Withdraw bill selection page
-        # TODO
+        self.withdrawBills_menu = {
+            '*': self.abort, '#': self.donate,
+            '1': self.select1, '2': self.deselect1,
+            '3': self.select2, '4': self.deselect2,
+            '5': self.select3, '6': self.deselect3
+        }
+
+        self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
+        self.ui.withdrawBillsAccept.clicked.connect(self.withdrawBills_menu['#'])
 
         # Donate page
         self.donate_menu = {
@@ -177,6 +190,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.MAIN_PAGE: self.main_menu,
             self.WITHDRAW_PAGE: self.withdraw_menu,
             self.WITHDRAW_MANUAL_PAGE: self.withdrawManual_menu,
+            self.WITHDRAW_BILLS_PAGE: self.withdrawBills_menu,
             self.DONATE_PAGE: self.donate_menu,
             self.BALANCE_PAGE: self.balance_menu,
             self.CONFIRM_PAGE: self.confirm_menu
@@ -427,6 +441,9 @@ class MainWindow(QtWidgets.QMainWindow):
     @pyqtSlot()
     def abort(self):
         self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
+        self.counter5 = 0
+        self.counter10 = 0
+        self.counter50 = 0
 
     @pyqtSlot()
     def goHome(self):
@@ -483,6 +500,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # we should clear all modified variables and labels here for security
         self.keybuf = []
         self.keyindex = 0
+        self.counter5 = 0
+        self.counter10 = 0
+        self.counter50 = 0
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
@@ -543,17 +563,125 @@ class MainWindow(QtWidgets.QMainWindow):
             # nothing has been entered yet
             return
 
-        self.withdraw(amount)
+        self.withdrawBillsPage(amount) #withdraw(amount)
 
 
     #
     # Withdraw bill selection page
     #
     @pyqtSlot()
-    def withdrawBillsPage(self):
+    def withdrawBillsPage(self,amount):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
+        if amount < 500:
+            self.ui.fiveEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFive.setEnabled(False)
+            self.ui.btnPlusFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFive.setEnabled(False)
+            self.ui.btnMinFive.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.tenEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTen.setEnabled(False)
+            self.ui.btnPlusTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTen.setEnabled(False)
+            self.ui.btnMinTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFifthy.setEnabled(False)
+            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFifthy.setEnabled(False)
+            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount == 500:
+            self.ui.fiveEuroText.setStyleSheet(None)
+            self.ui.amountBillsFive.setStyleSheet(None)
+            self.ui.btnPlusFive.setEnabled(True)
+            self.ui.btnPlusFive.setStyleSheet(None)
+            self.ui.btnMinFive.setEnabled(True)
+            self.ui.btnMinFive.setStyleSheet(None)
+            self.ui.tenEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusTen.setEnabled(False)
+            self.ui.btnPlusTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinTen.setEnabled(False)
+            self.ui.btnMinTen.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFifthy.setEnabled(False)
+            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFifthy.setEnabled(False)
+            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount > 500 and amount < 5000:
+            self.ui.fiveEuroText.setStyleSheet(None)
+            self.ui.amountBillsFive.setStyleSheet(None)
+            self.ui.btnPlusFive.setEnabled(True)
+            self.ui.btnPlusFive.setStyleSheet(None)
+            self.ui.btnMinFive.setEnabled(True)
+            self.ui.btnMinFive.setStyleSheet(None)
+            self.ui.tenEuroText.setStyleSheet(None)
+            self.ui.amountBillsTen.setStyleSheet(None)
+            self.ui.btnPlusTen.setEnabled(True)
+            self.ui.btnPlusTen.setStyleSheet(None)
+            self.ui.btnMinTen.setEnabled(True)
+            self.ui.btnMinTen.setStyleSheet(None)
+            self.ui.fifthyEuroText.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.amountBillsFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160)")
+            self.ui.btnPlusFifthy.setEnabled(False)
+            self.ui.btnPlusFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+            self.ui.btnMinFifthy.setEnabled(False)
+            self.ui.btnMinFifthy.setStyleSheet("text-decoration: line-through;color: rgb(160, 160, 160);")
+        if amount >= 5000:
+            self.ui.fiveEuroText.setStyleSheet(None)
+            self.ui.amountBillsFive.setStyleSheet(None)
+            self.ui.btnPlusFive.setEnabled(True)
+            self.ui.btnPlusFive.setStyleSheet(None)
+            self.ui.btnMinFive.setEnabled(True)
+            self.ui.btnMinFive.setStyleSheet(None)
+            self.ui.tenEuroText.setStyleSheet(None)
+            self.ui.amountBillsTen.setStyleSheet(None)
+            self.ui.btnPlusTen.setEnabled(True)
+            self.ui.btnPlusTen.setStyleSheet(None)
+            self.ui.btnMinTen.setEnabled(True)
+            self.ui.btnMinTen.setStyleSheet(None)
+            self.ui.fifthyEuroText.setStyleSheet(None)
+            self.ui.amountBillsFifthy.setStyleSheet(None)
+            self.ui.btnPlusFifthy.setEnabled(True)
+            self.ui.btnPlusFifthy.setStyleSheet(None)
+            self.ui.btnMinFifthy.setEnabled(True)
+            self.ui.btnMinFifthy.setStyleSheet(None)
+        # TODO implement dispense bills
 
-        # TODO implement
+    @pyqtSlot()
+    def select1(self):
+        # print(self.counter5)
+        self.counter5 = self.counter5 + 1
+        self.ui.amountBillsFive.setText(f"Aantal geselcteerd: {self.counter5}")
+    
+    @pyqtSlot()
+    def select2(self):
+        # print(self.counter10)
+        self.counter10 = self.counter10 + 1
+        self.ui.amountBillsTen.setText(f"Aantal geselcteerd: {self.counter10}")
+
+    @pyqtSlot()
+    def select3(self):
+        # print(self.counter50)
+        self.counter50 = self.counter50 + 1
+        self.ui.amountBillsFifthy.setText(f"Aantal geselcteerd: {self.counter50}")
+
+    @pyqtSlot()
+    def deselect1(self):
+        self.counter5 = self.counter5 -1
+        self.ui.amountBillsFive.setText(f"Aantal geselcteerd: {self.counter5}")
+    
+    @pyqtSlot()
+    def deselect2(self):
+        self.counter10 = self.counter10 - 1
+        self.ui.amountBillsTen.setText(f"Aantal geselcteerd: {self.counter10}")
+
+    @pyqtSlot()
+    def deselect3(self):
+        self.counter50 = self.counter50 - 1
+        self.ui.amountBillsFifthy.setText(f"Aantal geselcteerd: {self.counter50}")
 
 
     #
@@ -634,7 +762,7 @@ def main(argv):
         sys.exit(1)
 
     # empty input_souce means that we'll use only the keyboard and mouse as input
-    serial_port = ''
+    serial_port = 'COM5'
 
     host = '145.24.222.242'
     port = 8420
@@ -664,7 +792,7 @@ def main(argv):
     app = QtWidgets.QApplication(sys.argv)
 
     win = MainWindow()
-    win.show()
+    win.showMaximized()
     sys.exit(app.exec())
 
 if __name__ == "__main__":
