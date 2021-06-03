@@ -50,6 +50,7 @@ QLabel {
 #withdrawManualText,
 #donateText,
 #balanceText,
+#confirmText,
 #resultText {
 	padding-top: 48px;
 	padding-bottom: 48px;
@@ -111,7 +112,8 @@ QPushButton:pressed {
 #withdrawAbort,
 #withdrawManualAbort,
 #withdrawBillsAbort,
-#donateAbort {
+#donateAbort,
+#confirmNegative {
 	text-align: left;
 	border-top-right-radius: 8px;
 }
@@ -120,7 +122,8 @@ QPushButton:pressed {
 #withdrawManual,
 #withdrawManualAccept,
 #donateAccept,
-#balanceAccept {
+#balanceAccept,
+#confirmPositive {
 	text-align: right;
 	border-top-left-radius: 8px;
 }</string>
@@ -161,7 +164,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>8</number>
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -225,7 +228,7 @@ QPushButton:pressed {
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="presentCardIcon">
             <property name="maximumSize">
              <size>
               <width>300</width>
@@ -504,7 +507,7 @@ QPushButton:pressed {
         <item>
          <widget class="QLabel" name="pin">
           <property name="text">
-           <string> </string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1517,6 +1520,116 @@ QPushButton:pressed {
             </property>
             <property name="text">
              <string>Terugkeren    #</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="confirmPage">
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <spacer name="verticalSpacer_28">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="confirmText">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_27">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item>
+           <widget class="QPushButton" name="confirmNegative">
+            <property name="minimumSize">
+             <size>
+              <width>350</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>86</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_12">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="confirmPositive">
+            <property name="minimumSize">
+             <size>
+              <width>350</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>86</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
             </property>
            </widget>
           </item>

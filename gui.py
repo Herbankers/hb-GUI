@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import *
+from datetime import datetime
 import functools
 import getopt
 import sys
@@ -31,9 +32,15 @@ PIN_LENGTH = 4
 class Arduino(QObject):
     keyPress = pyqtSignal(str)
     cardScan = pyqtSignal(str)
+    listening = True
 
     def run(self):
-        while True:
+        self.listening = True
+
+        while self.listening:
+            if arduino.in_waiting == 0:
+                continue
+
             data = arduino.readline()[:-2]
             decoded_data = str(data, 'utf-8')
 
@@ -42,25 +49,36 @@ class Arduino(QObject):
             if decoded_data[0:1] == 'U':
                 self.cardScan.emit(decoded_data[1:])
 
+    def stop(self):
+        self.listening = False
+
 class MainWindow(QtWidgets.QMainWindow):
-    CARD_PAGE = 0
-    LOGIN_PAGE = 1
-    MAIN_PAGE = 2
-    WITHDRAW_PAGE = 3
+    # Page index numbers
+    CARD_PAGE            = 0
+    LOGIN_PAGE           = 1
+    MAIN_PAGE            = 2
+    WITHDRAW_PAGE        = 3
     WITHDRAW_MANUAL_PAGE = 4
-    WITHDRAW_BILLS_PAGE = 5
-    DONATE_PAGE = 6
-    BALANCE_PAGE = 7
-    RESULT_PAGE = 8
+    WITHDRAW_BILLS_PAGE  = 5
+    DONATE_PAGE          = 6
+    BALANCE_PAGE         = 7
+    CONFIRM_PAGE         = 8
+    RESULT_PAGE          = 9
 
     MONOSPACE_HTML = '<font face="Fira Mono, DejaVu Sans Mono, Menlo, Consolas, Liberation Mono, Monaco, Lucida Console, monospace">'
 
-    card_id = ''
-    iban = ''
-    keybuf = []
-    keyindex = 0
-
     translator = QTranslator()
+
+    card_id     = ''
+    iban        = ''
+    keybuf      = []
+    keyindex    = 0
+
+    # Confirm page modes
+    confirmMode = -1
+
+    CONFIRM_AMOUNT  = 0
+    CONFIRM_RECEIPT = 1
 
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -145,6 +163,14 @@ class MainWindow(QtWidgets.QMainWindow):
         }
         self.ui.balanceAccept.clicked.connect(self.balance_menu['#'])
 
+        # Confirm page
+        self.confirm_menu = {
+            '*': self.confirmNegative, '#': self.confirmPositive
+        }
+        self.ui.confirmNegative.clicked.connect(self.confirm_menu['*'])
+        self.ui.confirmPositive.clicked.connect(self.confirm_menu['#'])
+
+        # list of menus for keyboard handler
         self.menus = {
             self.CARD_PAGE: self.card_menu,
             self.LOGIN_PAGE: self.login_menu,
@@ -152,7 +178,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.WITHDRAW_PAGE: self.withdraw_menu,
             self.WITHDRAW_MANUAL_PAGE: self.withdrawManual_menu,
             self.DONATE_PAGE: self.donate_menu,
-            self.BALANCE_PAGE: self.balance_menu
+            self.BALANCE_PAGE: self.balance_menu,
+            self.CONFIRM_PAGE: self.confirm_menu
         }
 
     # card scan handler
@@ -167,6 +194,33 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
             self.clearInput(abort=False)
 
+    # print a receipt
+    def printReceipt(self):
+        self.worker.stop()
+        self.thread.quit()
+        self.thread.wait()
+
+        # TODO print Billmix
+
+        date = datetime.now()
+
+        # TODO correct language based on selected language
+        receiptText = 'Amount: EUR ' + self.receiptAmount + '\n' + \
+                      'IBAN: **************' + self.iban[-4:] + '\n' + \
+                      'Date: ' + date.strftime('%d %B %Y') + '\n' + \
+                      'Time: ' + date.strftime('%H:%M:%S') + '\n' + \
+                      'Location: INGB Rotterdam' + '\n\n\n\n\n'
+
+        arduino.write(receiptText.encode())
+
+        while arduino.out_waiting > 0:
+            pass
+        arduino.flush();
+
+        self.thread.start()
+
+    # generic (for both keypad and keyboard) input handler
+    # mouse clicks are handled using Qt's signals and slots
     def keyHandler(self, key):
         page = self.ui.stack.currentIndex()
 
@@ -378,21 +432,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def goHome(self):
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
 
-    @pyqtSlot()
-    def showResult(self, text, logout=True):
-        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-        self.ui.resultText.setText(text)
-
-        # automatically logout after 2 seconds
-        self.timer = QTimer()
-        if logout:
-            self.timer.timeout.connect(self.logout)
-        else:
-            self.timer.timeout.connect(self.goHome)
-
-        self.timer.setSingleShot(True)
-        self.timer.start(2000)
-
 
     #
     # Card page
@@ -447,15 +486,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
+        self.receiptAmount = '0'
+        self.receiptBillmix = None
 
         self.dutch()
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
+
 
     #
     # Withdraw page
     #
     @pyqtSlot()
-    def withdraw(self, amount):
+    def withdraw(self, amount, billmix=None):
         # start processing
         self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
         self.ui.resultText.setText(self.tr('Een moment geduld...'))
@@ -464,10 +506,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
             # TODO operate money dispenser here (on a separate thread ofc)
 
+            #confirmReceipt(amount, billmix);
             self.timer = QTimer()
-            self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
+            self.timer.timeout.connect(functools.partial(self.confirmReceipt, amount=amount, billmix=billmix))
             self.timer.setSingleShot(True)
-            self.timer.start(3000)
+            self.timer.start(1000)
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
             self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
 
@@ -481,6 +524,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.showResult(self.tr('Een interne fout is opgetreden'))
             print(reply)
+
 
     #
     # Withdraw manual page
@@ -501,6 +545,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.withdraw(amount)
 
+
     #
     # Withdraw bill selection page
     #
@@ -509,6 +554,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
 
         # TODO implement
+
 
     #
     # Donate page
@@ -520,6 +566,54 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.resultText.setText('Nog niet geïmplementeerd')
         self.timer = QTimer()
         self.timer.timeout.connect(self.abort)
+        self.timer.setSingleShot(True)
+        self.timer.start(2000)
+
+
+    #
+    # Confirm page
+    #
+    def confirmReceipt(self, amount, billmix):
+        self.confirmMode = self.CONFIRM_RECEIPT
+        self.receiptAmount = str(round(amount / 100))
+        self.receiptBillmix = billmix
+
+        self.ui.confirmText.setText(self.tr('Wilt u een bon?'))
+        self.ui.confirmNegative.setText(self.tr('﹡    Nee'))
+        self.ui.confirmPositive.setText(self.tr('Ja    #'))
+
+        # TODO save amount and billmix to memory
+
+        self.ui.stack.setCurrentIndex(self.CONFIRM_PAGE)
+
+    @pyqtSlot()
+    def confirmNegative(self):
+        if self.confirmMode == self.CONFIRM_RECEIPT:
+            self.showResult(self.tr('Nog een fijne dag!'))
+
+    @pyqtSlot()
+    def confirmPositive(self):
+        if self.confirmMode == self.CONFIRM_RECEIPT:
+            self.printReceipt()
+
+            self.showResult(self.tr('Nog een fijne dag!'))
+
+
+    #
+    # Result page
+    #
+    @pyqtSlot()
+    def showResult(self, text, logout=True):
+        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+        self.ui.resultText.setText(text)
+
+        # automatically logout after 2 seconds
+        self.timer = QTimer()
+        if logout:
+            self.timer.timeout.connect(self.logout)
+        else:
+            self.timer.timeout.connect(self.goHome)
+
         self.timer.setSingleShot(True)
         self.timer.start(2000)
 
