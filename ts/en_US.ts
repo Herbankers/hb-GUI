@@ -65,17 +65,17 @@
     <message>
       <location filename="../gui.py" line="581" />
       <source>Wilt u een bon?</source>
-      <translation type="unfinished" />
+      <translation>Would you like a receipt?</translation>
     </message>
     <message>
       <location filename="../gui.py" line="582" />
       <source>﹡    Nee</source>
-      <translation type="unfinished" />
+      <translation>﹡    No</translation>
     </message>
     <message>
       <location filename="../gui.py" line="583" />
       <source>Ja    #</source>
-      <translation type="unfinished" />
+      <translation>Yes    #</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
