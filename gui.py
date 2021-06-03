@@ -8,6 +8,10 @@ import sys
 from hbp import *
 from ui.main import *
 
+import time
+import adafruit_thermal_printer
+ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.67)
+
 #
 # On PC keyboards,
 #   '-' can be used instead of '*'
@@ -24,11 +28,15 @@ from ui.main import *
 app = None      # QApplication
 hbp = None      # hbp object
 arduino = None  # serial object
+printer = None  # printer object
 
 # although both the server and HBP support PINs of up to 12 numbers, we've decided to hardcode 4 in the client for now
 # for convenience sake
 PIN_LENGTH = 4
 
+# TODO stop this thread properly on exit, we should handle exiting properly in the first place, which is not done right
+# now at alllll
+mutex = QMutex()
 class Arduino(QObject):
     keyPress = pyqtSignal(str)
     cardScan = pyqtSignal(str)
@@ -38,10 +46,16 @@ class Arduino(QObject):
         self.listening = True
 
         while self.listening:
+            mutex.lock()
+
             if arduino.in_waiting == 0:
+                time.sleep(0.1)
+                mutex.unlock()
                 continue
 
             data = arduino.readline()[:-2]
+            mutex.unlock()
+
             decoded_data = str(data, 'utf-8')
 
             if decoded_data[0:1] == 'K':
@@ -196,28 +210,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # print a receipt
     def printReceipt(self):
-        self.worker.stop()
-        self.thread.quit()
-        self.thread.wait()
-
-        # TODO print Billmix
+        mutex.lock()
+        arduino.write('['.encode())
 
         date = datetime.now()
 
-        # TODO correct language based on selected language
-        receiptText = 'Amount: EUR ' + self.receiptAmount + '\n' + \
-                      'IBAN: **************' + self.iban[-4:] + '\n' + \
-                      'Date: ' + date.strftime('%d %B %Y') + '\n' + \
-                      'Time: ' + date.strftime('%H:%M:%S') + '\n' + \
-                      'Location: INGB Rotterdam' + '\n\n\n\n\n'
+        # print the logo
+        printer.size = adafruit_thermal_printer.SIZE_LARGE
+        printer.justify = adafruit_thermal_printer.JUSTIFY_CENTER
+        printer.print('INGrid')
+        printer.size = adafruit_thermal_printer.SIZE_SMALL
+        printer.justify = adafruit_thermal_printer.JUSTIFY_LEFT
+        printer.feed(1)
 
-        arduino.write(receiptText.encode())
+        # TODO include the billmix
+        # TODO non-hardcoded location?
 
-        while arduino.out_waiting > 0:
-            pass
-        arduino.flush();
+        # compose and print the receipt
+        receiptText =         'IBAN     '  + f'**************{self.iban[-4:]}\n' + \
+                      self.tr('Bedrag   ') + f'EUR {self.receiptAmount}\n' + \
+                      self.tr('Datum    ') + f'{date.strftime("%d %B %Y")}\n' + \
+                      self.tr('Tijd     ') + f'{date.strftime("%H:%M:%S")}\n' + \
+                      self.tr('Locatie  ') +  'INGB Rotterdam'
+        printer.print(receiptText)
+        printer.feed(4)
 
-        self.thread.start()
+        # start listening for keys and RFID tags again
+        arduino.write(']'.encode())
+        mutex.unlock()
 
     # generic (for both keypad and keyboard) input handler
     # mouse clicks are handled using Qt's signals and slots
@@ -506,11 +526,29 @@ class MainWindow(QtWidgets.QMainWindow):
         if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
             # TODO operate money dispenser here (on a separate thread ofc)
 
-            #confirmReceipt(amount, billmix);
-            self.timer = QTimer()
-            self.timer.timeout.connect(functools.partial(self.confirmReceipt, amount=amount, billmix=billmix))
-            self.timer.setSingleShot(True)
-            self.timer.start(1000)
+            # TODO only go to this screen if a printer is presetn
+
+            # check if the printer may be out of paper
+            # FIXME for some reason printer.has_paper() craps out, so we use this
+            mutex.lock()
+            arduino.write('['.encode())
+            printer.feed(1)
+            printer.send_command("\x1Bv\x00")
+            hasPaper = not int.from_bytes(printer._uart.read(1), byteorder=sys.byteorder) & 0b000100
+            arduino.write(']'.encode())
+            mutex.unlock()
+
+            if printer == None or not hasPaper:
+                self.timer = QTimer()
+                self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Een bon is helaas niet beschikbaar')))
+                self.timer.setSingleShot(True)
+                self.timer.start(1000)
+            else:
+                self.timer = QTimer()
+                self.timer.timeout.connect(functools.partial(self.confirmReceipt, amount=amount, billmix=billmix))
+                self.timer.setSingleShot(True)
+                self.timer.start(1000)
+                #confirmReceipt(amount, billmix);
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
             self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
 
@@ -625,6 +663,7 @@ def main(argv):
     global app
     global hbp
     global arduino
+    global printer
 
     # parse command line options
     try:
@@ -660,6 +699,7 @@ def main(argv):
 
     if serial_port != '':
         arduino = serial.Serial(serial_port, 9600, timeout=.1)
+        printer = ThermalPrinter(arduino)
 
     app = QtWidgets.QApplication(sys.argv)
 
