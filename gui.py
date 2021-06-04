@@ -532,28 +532,32 @@ class MainWindow(QtWidgets.QMainWindow):
         if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
             # TODO operate money dispenser here (on a separate thread ofc)
 
-            # TODO only go to this screen if a printer is presetn
+            # check if the printer has paper
+            hasPaper = False
+            if printer != None:
+                mutex.lock()
+                arduino.write('['.encode())
+                printer.feed(1)
 
-            # check if the printer may be out of paper
-            # FIXME for some reason printer.has_paper() craps out, so we use this
-            mutex.lock()
-            arduino.write('['.encode())
-            printer.feed(1)
-            printer.send_command("\x1Bv\x00")
-            hasPaper = not int.from_bytes(printer._uart.read(1), byteorder=sys.byteorder) & 0b000100
-            arduino.write(']'.encode())
-            mutex.unlock()
+                # for some reason printer.has_paper() craps out, so we use this
+                printer.send_command("\x1Bv\x00")
+                hasPaper = not int.from_bytes(printer._uart.read(1), byteorder=sys.byteorder) & 0b000100
 
+                arduino.write(']'.encode())
+                mutex.unlock()
+
+            # ask if the customer wants a receipt if a printer is present
             if printer == None or not hasPaper:
+                self.ui.resultText.setText(self.tr('Een bon is helaas niet beschikbaar'))
                 self.timer = QTimer()
-                self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Een bon is helaas niet beschikbaar')))
+                self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
                 self.timer.setSingleShot(True)
-                self.timer.start(1000)
+                self.timer.start(2000)
             else:
                 self.timer = QTimer()
                 self.timer.timeout.connect(functools.partial(self.confirmReceipt, amount=amount, billmix=billmix))
                 self.timer.setSingleShot(True)
-                self.timer.start(1000)
+                self.timer.start(2000)
                 #confirmReceipt(amount, billmix);
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
             self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))

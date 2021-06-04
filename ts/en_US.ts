@@ -4,8 +4,9 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="../gui.py" line="643" />
-      <location filename="../gui.py" line="636" />
+      <location filename="../gui.py" line="646" />
+      <location filename="../gui.py" line="639" />
+      <location filename="../gui.py" line="552" />
       <location filename="../gui.py" line="136" />
       <source>Nog een fijne dag!</source>
       <translation>Have a nice day!</translation>
@@ -67,7 +68,7 @@
       <translation>This card is blocked</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="569" />
+      <location filename="../gui.py" line="572" />
       <location filename="../gui.py" line="443" />
       <source>Een interne fout is opgetreden</source>
       <translation>An internal error has occurred</translation>
@@ -78,27 +79,27 @@
       <translation>One moment please...</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="549" />
+      <location filename="../gui.py" line="550" />
       <source>Een bon is helaas niet beschikbaar</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../gui.py" line="559" />
+      <location filename="../gui.py" line="562" />
       <source>Uw saldo is ontoereikend</source>
       <translation>Your balance is insufficient</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="625" />
+      <location filename="../gui.py" line="628" />
       <source>Wilt u een bon?</source>
       <translation>Would you like a receipt?</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="626" />
+      <location filename="../gui.py" line="629" />
       <source>﹡    Nee</source>
       <translation>﹡    No</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="627" />
+      <location filename="../gui.py" line="630" />
       <source>Ja    #</source>
       <translation>Yes    #</translation>
     </message>
