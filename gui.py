@@ -213,8 +213,6 @@ class MainWindow(QtWidgets.QMainWindow):
         mutex.lock()
         arduino.write('['.encode())
 
-        date = datetime.now()
-
         # print the logo
         printer.size = adafruit_thermal_printer.SIZE_LARGE
         printer.justify = adafruit_thermal_printer.JUSTIFY_CENTER
@@ -223,14 +221,16 @@ class MainWindow(QtWidgets.QMainWindow):
         printer.justify = adafruit_thermal_printer.JUSTIFY_LEFT
         printer.feed(1)
 
-        # TODO include the billmix
+        # TODO include the billmix on the receipt
         # TODO non-hardcoded location?
+
+        now = QDateTime.currentDateTime()
 
         # compose and print the receipt
         receiptText =         'IBAN     '  + f'**************{self.iban[-4:]}\n' + \
                       self.tr('Bedrag   ') + f'EUR {self.receiptAmount}\n' + \
-                      self.tr('Datum    ') + f'{date.strftime("%d %B %Y")}\n' + \
-                      self.tr('Tijd     ') + f'{date.strftime("%H:%M:%S")}\n' + \
+                      self.tr('Datum    ') + f'{QLocale().toString(now, "d MMMM yyyy")}\n' + \
+                      self.tr('Tijd     ') + f'{QLocale().toString(now, "HH:mm:ss")}\n' + \
                       self.tr('Locatie  ') +  'INGB Rotterdam'
         printer.print(receiptText)
         printer.feed(4)
@@ -461,19 +461,25 @@ class MainWindow(QtWidgets.QMainWindow):
         app.removeTranslator(self.translator)
         self.ui.retranslateUi(self)
 
+        QLocale.setDefault(QLocale('nl_NL'))
+
     @pyqtSlot()
     def german(self):
         app.removeTranslator(self.translator)
-        self.translator.load("ts/de_DE.qm")
+        self.translator.load('ts/de_DE.qm')
         app.installTranslator(self.translator)
         self.ui.retranslateUi(self)
+
+        QLocale.setDefault(QLocale('de_DE'))
 
     @pyqtSlot()
     def english(self):
         app.removeTranslator(self.translator)
-        self.translator.load("ts/en_US.qm")
+        self.translator.load('ts/en_US.qm')
         app.installTranslator(self.translator)
         self.ui.retranslateUi(self)
+
+        QLocale.setDefault(QLocale('en_US'))
 
 
     #
