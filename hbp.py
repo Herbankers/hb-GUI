@@ -1,5 +1,7 @@
 import msgpack
+import serial
 import socket
+import ssl
 
 class HBP:
     HBP_VERSION                     = 1
@@ -49,8 +51,12 @@ class HBP:
     HBP_TRANSFER_INSUFFICIENT_FUNDS = 2
 
     def __init__(self, host, port):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH, cafile='crt/ca.crt')
+        context.load_cert_chain(certfile='crt/client.crt', keyfile='crt/client.key')
 
+        plainsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        self.sock = context.wrap_socket(plainsock, server_side=False, server_hostname=host)
         self.sock.connect((host, int(port)))
 
     def _send(self, request_type, data):
