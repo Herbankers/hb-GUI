@@ -64,7 +64,27 @@ class Arduino(QObject):
             if decoded_data[0:1] == 'U':
                 self.cardUID.emit(decoded_data[1:])
             if decoded_data[0:1] == 'I':
-                self.cardIBAN.emit(decoded_data[1:])
+                iban = decoded_data[1:]
+
+                # check IBAN country code for validity
+                if iban[0:2].isalpha() == False:
+                    continue
+
+                # check 'check digits' for validitiy
+                if iban[2:4].isdecimal() == False:
+                    continue
+
+                # check bank name for validitiy
+                if iban[4:8].isalpha() == False:
+                    continue
+
+                # check account number for validitiy
+                # only check the first 16 numbers bcs everyone else is too lazy to write 2 additional bytes to their
+                # RFID cards bcs it's not by default in the example that literally EVERYONE has copied, lazy fuckers
+                if iban[8:16].isdecimal() == False:
+                    continue
+
+                self.cardIBAN.emit(iban)
 
     def stop(self):
         self.listening = False

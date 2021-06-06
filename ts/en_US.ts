@@ -4,102 +4,102 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="../gui.py" line="656" />
-      <location filename="../gui.py" line="649" />
-      <location filename="../gui.py" line="562" />
-      <location filename="../gui.py" line="140" />
+      <location filename="../gui.py" line="676" />
+      <location filename="../gui.py" line="669" />
+      <location filename="../gui.py" line="582" />
+      <location filename="../gui.py" line="160" />
       <source>Nog een fijne dag!</source>
       <translation>Have a nice day!</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="240" />
+      <location filename="../gui.py" line="260" />
       <source>Bedrag   </source>
       <translation>Amount   </translation>
     </message>
     <message>
-      <location filename="../gui.py" line="241" />
+      <location filename="../gui.py" line="261" />
       <source>Datum    </source>
       <translation>Date     </translation>
     </message>
     <message>
-      <location filename="../gui.py" line="242" />
+      <location filename="../gui.py" line="262" />
       <source>Tijd     </source>
       <translation>Time     </translation>
     </message>
     <message>
-      <location filename="../gui.py" line="243" />
+      <location filename="../gui.py" line="263" />
       <source>Locatie  </source>
       <translation>Location </translation>
     </message>
     <message>
-      <location filename="../gui.py" line="337" />
-      <location filename="../gui.py" line="328" />
-      <location filename="../gui.py" line="278" />
+      <location filename="../gui.py" line="357" />
+      <location filename="../gui.py" line="348" />
+      <location filename="../gui.py" line="298" />
       <source>﹡    Correctie</source>
       <translation>﹡    Clear</translation>
     </message>
     <message>
       <location filename="../ui/main.ui" line="0" />
       <location filename="../ui/main.ui" line="0" />
-      <location filename="../gui.py" line="420" />
-      <location filename="../gui.py" line="406" />
-      <location filename="../gui.py" line="395" />
+      <location filename="../gui.py" line="440" />
+      <location filename="../gui.py" line="426" />
+      <location filename="../gui.py" line="415" />
       <source>﹡    Afbreken</source>
       <translation>﹡    Abort</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="444" />
+      <location filename="../gui.py" line="464" />
       <source>Welkom</source>
       <translation>Welcome</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="446" />
+      <location filename="../gui.py" line="466" />
       <source>Welkom!</source>
       <translation>Welcome!</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="448" />
+      <location filename="../gui.py" line="468" />
       <source>Onjuiste PIN</source>
       <translation>Incorrect PIN</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="450" />
+      <location filename="../gui.py" line="470" />
       <source>Deze kaart is geblokkeerd</source>
       <translation>This card is blocked</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="582" />
-      <location filename="../gui.py" line="452" />
+      <location filename="../gui.py" line="602" />
+      <location filename="../gui.py" line="472" />
       <source>Een interne fout is opgetreden</source>
       <translation>An internal error has occurred</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="538" />
+      <location filename="../gui.py" line="558" />
       <source>Een moment geduld...</source>
       <translation>One moment please...</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="560" />
+      <location filename="../gui.py" line="580" />
       <source>Een bon is helaas niet beschikbaar</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../gui.py" line="572" />
+      <location filename="../gui.py" line="592" />
       <source>Uw saldo is ontoereikend</source>
       <translation>Your balance is insufficient</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="638" />
+      <location filename="../gui.py" line="658" />
       <source>Wilt u een bon?</source>
       <translation>Would you like a receipt?</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="639" />
+      <location filename="../gui.py" line="659" />
       <source>﹡    Nee</source>
       <translation>﹡    No</translation>
     </message>
     <message>
-      <location filename="../gui.py" line="640" />
+      <location filename="../gui.py" line="660" />
       <source>Ja    #</source>
       <translation>Yes    #</translation>
     </message>
