@@ -265,11 +265,14 @@ def login():
             if decoded_data[0:1] == 'U':
                 card_id = decoded_data[1:]
                 break
-        #print(f'Kaart ID: {card_id}')
 
-        # TODO should get this from the card too
-        iban = 'NL35HERB2932749274'
-        #print(f'IBAN: {iban}')
+        while True:
+            data = arduino.readline()[:-2]
+            decoded_data = str(data, 'utf-8')
+
+            if decoded_data[0:1] == 'I':
+                iban = decoded_data[1:]
+                break
 
         clear()
 

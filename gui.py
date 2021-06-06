@@ -39,7 +39,8 @@ PIN_LENGTH = 4
 mutex = QMutex()
 class Arduino(QObject):
     keyPress = pyqtSignal(str)
-    cardScan = pyqtSignal(str)
+    cardUID = pyqtSignal(str)
+    cardIBAN = pyqtSignal(str)
     listening = True
 
     def run(self):
@@ -61,7 +62,9 @@ class Arduino(QObject):
             if decoded_data[0:1] == 'K':
                 self.keyPress.emit(decoded_data[1:])
             if decoded_data[0:1] == 'U':
-                self.cardScan.emit(decoded_data[1:])
+                self.cardUID.emit(decoded_data[1:])
+            if decoded_data[0:1] == 'I':
+                self.cardIBAN.emit(decoded_data[1:])
 
     def stop(self):
         self.listening = False
@@ -108,7 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
             self.thread.started.connect(self.worker.run)
             self.worker.keyPress.connect(self.keypadPress)
-            self.worker.cardScan.connect(self.cardScan)
+            self.worker.cardUID.connect(self.cardUID)
+            self.worker.cardIBAN.connect(self.cardIBAN)
 
             self.thread.start()
 
@@ -196,12 +200,17 @@ class MainWindow(QtWidgets.QMainWindow):
             self.CONFIRM_PAGE: self.confirm_menu
         }
 
-    # card scan handler
+    # card UID scan handler
     @pyqtSlot(str)
-    def cardScan(self, data):
+    def cardUID(self, data):
         if self.ui.stack.currentIndex() == self.CARD_PAGE:
             self.card_id = data
-            self.iban = 'NL35HERB2932749274' # FIXME correctly retrieve iban from rfid card
+
+    # card IBAN scan handler
+    @pyqtSlot(str)
+    def cardIBAN(self, data):
+        if self.ui.stack.currentIndex() == self.CARD_PAGE:
+            self.iban = data
 
             self.ui.pinText.setGraphicsEffect(None)
             self.ui.loginAbort.setGraphicsEffect(None)
