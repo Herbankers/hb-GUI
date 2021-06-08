@@ -3,6 +3,7 @@ from PyQt6.QtCore import *
 from datetime import datetime
 import functools
 import getopt
+import math
 import sys
 
 from hbp import *
@@ -41,6 +42,7 @@ class Arduino(QObject):
     keyPress = pyqtSignal(str)
     cardUID = pyqtSignal(str)
     cardIBAN = pyqtSignal(str)
+    finishDispense = pyqtSignal()
     listening = True
 
     def run(self):
@@ -57,12 +59,18 @@ class Arduino(QObject):
             data = arduino.readline()[:-2]
             mutex.unlock()
 
-            decoded_data = str(data, 'utf-8')
+            try:
+                decoded_data = str(data, 'utf-8')
+            except UnicodeDecodeError:
+                continue
 
+            # key pressed
             if decoded_data[0:1] == 'K':
                 self.keyPress.emit(decoded_data[1:])
+            # card scanned: UID
             if decoded_data[0:1] == 'U':
                 self.cardUID.emit(decoded_data[1:])
+            # card scanned: IBAN
             if decoded_data[0:1] == 'I':
                 iban = decoded_data[1:]
 
@@ -85,6 +93,9 @@ class Arduino(QObject):
                     continue
 
                 self.cardIBAN.emit(iban)
+            # finished dispensing bills
+            if decoded_data[0:1] == 'D':
+                self.finishDispense.emit()
 
     def stop(self):
         self.listening = False
@@ -236,6 +247,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.loginAbort.setGraphicsEffect(None)
             self.ui.stack.setCurrentIndex(self.LOGIN_PAGE)
             self.clearInput(abort=False)
+
+    # dispense the specified amount of bills
+    def dispenseBills(self, amount, billmix):
+        mutex.lock()
+
+        # send the dispense command
+        arduino.write(f'{billmix}'.encode())
+
+        # ask the customer to print a receipt after the dispensing has finished
+        self.worker.finishDispense.connect(functools.partial(self.confirmReceipt, amount=amount, billmix=billmix))
+
+        mutex.unlock()
 
     # print a receipt
     def printReceipt(self):
@@ -559,35 +582,23 @@ class MainWindow(QtWidgets.QMainWindow):
         reply = hbp.transfer('', amount);
 
         if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
-            # TODO operate money dispenser here (on a separate thread ofc)
+            # generate a billmix here if one wasn't provided already
+            if billmix == None:
+                remainder = amount / 100
 
-            # check if the printer has paper
-            hasPaper = False
-            if printer != None:
-                mutex.lock()
-                arduino.write('['.encode())
-                printer.feed(1)
+                twenties = math.floor(remainder / 20)
+                remainder -= twenties * 20
 
-                # for some reason printer.has_paper() craps out, so we use this
-                printer.send_command("\x1Bv\x00")
-                hasPaper = not int.from_bytes(printer._uart.read(1), byteorder=sys.byteorder) & 0b000100
+                tens = math.floor(remainder / 10)
+                remainder -= tens * 10
 
-                arduino.write(']'.encode())
-                mutex.unlock()
+                fives = math.floor(remainder / 5)
+                remainder -= fives * 5
 
-            # ask if the customer wants a receipt if a printer is present
-            if printer == None or not hasPaper:
-                self.ui.resultText.setText(self.tr('Een bon is helaas niet beschikbaar'))
-                self.timer = QTimer()
-                self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
-                self.timer.setSingleShot(True)
-                self.timer.start(2000)
-            else:
-                self.timer = QTimer()
-                self.timer.timeout.connect(functools.partial(self.confirmReceipt, amount=amount, billmix=billmix))
-                self.timer.setSingleShot(True)
-                self.timer.start(2000)
-                #confirmReceipt(amount, billmix);
+                billmix = (fives, tens, twenties)
+
+            # start the money dispensing process
+            self.dispenseBills(amount, billmix)
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
             self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
 
@@ -650,7 +661,34 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     # Confirm page
     #
+    @pyqtSlot()
     def confirmReceipt(self, amount, billmix):
+        self.worker.finishDispense.disconnect()
+
+        # check if the printer has paper
+        hasPaper = False
+        if printer != None:
+            mutex.lock()
+            arduino.write('['.encode())
+            printer.feed(1)
+
+            # for some reason printer.has_paper() craps out, so we use this
+            printer.send_command("\x1Bv\x00")
+            hasPaper = not int.from_bytes(printer._uart.read(1), byteorder=sys.byteorder) & 0b000100
+
+            arduino.write(']'.encode())
+            mutex.unlock()
+
+        # show a message to show the printer is not available
+        if printer == None or not hasPaper:
+            self.ui.resultText.setText(self.tr('Een bon is helaas niet beschikbaar'))
+            self.timer = QTimer()
+            self.timer.timeout.connect(functools.partial(self.showResult, text=self.tr('Nog een fijne dag!')))
+            self.timer.setSingleShot(True)
+            self.timer.start(2000)
+            return
+
+        # ask if the customer wants a receipt
         self.confirmMode = self.CONFIRM_RECEIPT
         self.receiptAmount = str(round(amount / 100))
         self.receiptBillmix = billmix
@@ -696,7 +734,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 # print usage information
 def help():
-    print('usage: gui.py [-h] [-s | --serial-port=] [-h | --host=] [-p | --port=]')
+    print('usage: gui.py [-?] [-s | --serial-port=] [-h | --host=] [-p | --port=]')
 
 def main(argv):
     global app
