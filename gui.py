@@ -283,9 +283,16 @@ class MainWindow(QtWidgets.QMainWindow):
                       self.tr('Bedrag   ') + f'EUR {self.receiptAmount}\n' + \
                       self.tr('Datum    ') + f'{QLocale().toString(now, "d MMMM yyyy")}\n' + \
                       self.tr('Tijd     ') + f'{QLocale().toString(now, "HH:mm:ss")}\n' + \
-                      self.tr('Locatie  ') +  'INGB Rotterdam'
+                      self.tr('Locatie  ') +  'INGB Rotterdam\n\n'
+        if self.receiptBillmix[0] > 0:
+            receiptText +=    'EUR  5   '  + f'{self.receiptBillmix[0]}x\n'
+        if self.receiptBillmix[1] > 0:
+            receiptText +=    'EUR 10   '  + f'{self.receiptBillmix[1]}x\n'
+        if self.receiptBillmix[2] > 0:
+            receiptText +=    'EUR 20   '  + f'{self.receiptBillmix[2]}x\n'
+
         printer.print(receiptText)
-        printer.feed(4)
+        printer.feed(3)
 
         # start listening for keys and RFID tags again
         arduino.write(']'.encode())
