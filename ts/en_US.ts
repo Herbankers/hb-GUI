@@ -4,7 +4,7 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="..\gui.py" line="490" />
+      <location filename="..\gui.py" line="484" />
       <location filename="..\gui.py" line="107" />
       <source>Nog een fijne dag!</source>
       <translation>Have a nice day!</translation>
@@ -44,25 +44,20 @@
       <translation>This card is blocked</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="504" />
+      <location filename="..\gui.py" line="498" />
       <location filename="..\gui.py" line="379" />
       <source>Een interne fout is opgetreden</source>
       <translation>An internal error has occurred</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="483" />
+      <location filename="..\gui.py" line="477" />
       <source>Een moment geduld...</source>
       <translation>One moment please...</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="494" />
+      <location filename="..\gui.py" line="488" />
       <source>Uw saldo is ontoereikend</source>
       <translation>Your balance is insufficient</translation>
-    </message>
-    <message>
-      <location filename="..\gui.py" line="567" />
-      <source>Bedrag is te laag om biljetten van op te nemen.</source>
-      <translation type="unfinished" />
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
@@ -137,7 +132,6 @@
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
-      <location filename="..\ui\main.ui" line="0" />
       <source>﹡    Afbreken</source>
       <translation>﹡    Abort</translation>
     </message>
@@ -195,7 +189,7 @@
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
-      <source>               Akkoord   #</source>
+      <source>﹡   Afbreken</source>
       <translation type="unfinished" />
     </message>
     <message>

@@ -1336,7 +1336,7 @@ QPushButton:pressed {
              </size>
             </property>
             <property name="text">
-             <string>﹡    Afbreken</string>
+             <string>﹡   Afbreken</string>
             </property>
            </widget>
           </item>
@@ -1352,13 +1352,6 @@ QPushButton:pressed {
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="withdrawBillsAccept">
-            <property name="text">
-             <string>               Akkoord   #</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>

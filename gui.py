@@ -134,12 +134,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw bill selection page
         self.withdrawBills_menu = {
-            '*': self.abort, '#': self.checkout,'2': print("option2"),
-            '1': print("option 1"),'3': print("option 3")
+            '*': self.abort, '2': self.checkout,
+            '1': self.checkout,'3': self.checkout
         }
 
         self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
-        self.ui.withdrawBillsAccept.clicked.connect(self.withdrawBills_menu['#'])
+        self.ui.btnOption1.clicked.connect(self.withdrawBills_menu['1'])
+        self.ui.btnOption1.clicked.connect(self.withdrawBills_menu['2'])
+        self.ui.btnOption1.clicked.connect(self.withdrawBills_menu['3'])
 
         # Donate page
         self.donate_menu = {
@@ -529,27 +531,27 @@ class MainWindow(QtWidgets.QMainWindow):
             amount = amount % 10
             fives = int(amount / 5)
             amount = amount % 5
-            return int(twenties/100)
+            return int(twenties/100),int(tens/100),int(fives/100)
         def medium(amount):
             tens = int(amount / 10)
             amount = amount % 10
             fives = int(amount / 5)
             amount = amount % 5
-            return int(tens/100)
+            return int(tens/100),int(fives/100)
         def smallest(amount):
             small = int(amount / 5)
             return int(small/100)
 
-        self.counter3 = largest(amount)
-        self.counter2 = medium(amount)
+        twentyBills = largest(amount)
+        tenBills = medium(amount)
         self.counter1 = smallest(amount)
-        # print("largets: ",self.counter3)
-        # print("medium: ",self.counter2)
-        # print("smallest: ",self.counter1)
+        self.counter2 = tenBills[0]
+        self.counter3 = twentyBills[0]
+
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
         if amount < 500:
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-            self.ui.resultText.setText(self.tr('Bedrag is te laag om biljetten van op te nemen.'))
+            self.ui.resultText.setText(self.tr(f'Het bedrag van {amount} is te laag om biljetten voor op te nemen.'))
             #goto main page back, insufficient amount
             self.timer = QTimer()
             self.timer.timeout.connect(self.abort)
@@ -580,7 +582,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnOption2.setVisible(True)
             self.ui.btnOption3.setEnabled(False)
             self.ui.btnOption3.setVisible(False)
-        if (1000 < amount < 1500) or (1500 < amount < 2000):
+        if amount > 1000 and amount < 1500 or amount > 1500 and amount < 2000: 
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
             self.ui.resultText.setText(self.tr(f'Geen biljet combinatie mogelijk voor het bedrag van €{int(amount/100)}\n Alleen bedragen die eindigen op 0 of 5'))
             #goto main page back, insufficient amount
@@ -595,7 +597,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnOption2.setText(f"{self.counter2} x €10 [2]")
             self.ui.btnOption2.setEnabled(True)
             self.ui.btnOption2.setVisible(True)
-            self.ui.btnOption3.setText(f"{self.counter3} x €20 [3]")
             self.ui.btnOption3.setEnabled(False)
             self.ui.btnOption3.setVisible(False)
         if amount == 2000:
@@ -608,31 +609,27 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnOption3.setText(f"{self.counter3} x €20 [3]")
             self.ui.btnOption3.setEnabled(True)
             self.ui.btnOption3.setVisible(True)
-        if amount > 2000 and amount < 5000:
-            self.ui.btnOption1.setEnabled(True)
-            self.ui.btnOption1.setVisible(True)
-            self.ui.btnOption2.setEnabled(False)
-            self.ui.btnOption2.setVisible(False)
-            self.ui.btnOption3.setEnabled(False)
-            self.ui.btnOption3.setVisible(False)
         if amount == 5000:
+            self.ui.btnOption1.setText(f"{self.counter1} x €5 [1]")
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
-            self.ui.btnOption2.setEnabled(False)
-            self.ui.btnOption2.setVisible(False)
-            self.ui.btnOption3.setEnabled(False)
-            self.ui.btnOption3.setVisible(False)
-        if amount > 10000:
+            self.ui.btnOption2.setText(f"{self.counter2} x €10 [2]")
+            self.ui.btnOption2.setEnabled(True)
+            self.ui.btnOption2.setVisible(True)
+            self.ui.btnOption3.setText(f"{self.counter3} x €20 [3]")
+            self.ui.btnOption3.setEnabled(True)
+            self.ui.btnOption3.setVisible(True)
+        if amount == 10000:
+            self.ui.btnOption1.setText(f"{self.counter1} x €5 [1]")
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
-            self.ui.btnOption2.setEnabled(False)
-            self.ui.btnOption2.setVisible(False)
-            self.ui.btnOption3.setEnabled(False)
-            self.ui.btnOption3.setVisible(False)
-            
+            self.ui.btnOption2.setText(f"{self.counter2} x €10 [2]")
+            self.ui.btnOption2.setEnabled(True)
+            self.ui.btnOption2.setVisible(True)
+            self.ui.btnOption3.setText(f"{self.counter3} x €20 [3]")
+            self.ui.btnOption3.setEnabled(True)
+            self.ui.btnOption3.setVisible(True)
         # TODO implement dispense bills
-    
-
 
     @pyqtSlot()
     def checkout(self):
