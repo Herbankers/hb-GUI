@@ -487,13 +487,29 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clearInput(abort=False)
 
         if reply == hbp.HBP_LOGIN_GRANTED:
-            self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
-
             name = hbp.info()
             if type(name) is list:
                 self.ui.name.setText(self.tr('Welkom') + f' {name[0]} {name[1]}!')
             else:
                 self.ui.name.setText(self.tr('Welkom!'))
+
+            self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
+
+            # enable all functionality
+            self.remote = False
+
+            self.ui.donate.setVisible(True)
+        elif reply == hbp.HBP_LOGIN_GRANTED_REMOTE:
+            self.ui.name.setText(self.tr('Welkom!'))
+            self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
+
+            # disable functionality that is not available over remote connections (i.e. via NOOB)
+            self.remote = True
+
+            sp = self.ui.donate.sizePolicy()
+            sp.setRetainSizeWhenHidden(True)
+            self.ui.donate.setSizePolicy(sp)
+            self.ui.donate.setVisible(False)
         elif reply == hbp.HBP_LOGIN_DENIED:
             self.showResult(self.tr('Onjuiste PIN'), logout=False)
         elif reply == hbp.HBP_LOGIN_BLOCKED:
@@ -550,6 +566,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def donatePage(self):
+        # donating is not supported on remote logins
+        if self.remote:
+            return
+
         self.ui.stack.setCurrentIndex(self.DONATE_PAGE)
 
         self.clearInput(abort=False)
@@ -605,7 +625,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 billmix = (fives, tens, twenties)
 
             # start the money dispensing process
-            self.dispenseBills(amount, billmix)
+            if arduino == None:
+                self.showResult(self.tr('Geld dispenser niet beschikbaar, wel afgeschreven 😈'))
+            else:
+                self.dispenseBills(amount, billmix)
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
             self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
 

@@ -4,7 +4,7 @@ import socket
 import ssl
 
 class HBP:
-    HBP_VERSION                     = 1
+    HBP_VERSION                     = 2
     HBP_MAGIC                       = 0x4B9A208E
     HBP_PORT                        = 8420
     HBP_HEADER_LENGTH               = 8
@@ -39,6 +39,7 @@ class HBP:
     HBP_LOGIN_GRANTED               = 0
     HBP_LOGIN_DENIED                = 1
     HBP_LOGIN_BLOCKED               = 2
+    HBP_LOGIN_GRANTED_REMOTE        = 3
 
     # Indicates why the session has ended/the server will disconnect
     HBP_TERM_LOGOUT                 = 0
