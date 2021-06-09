@@ -134,8 +134,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw bill selection page
         self.withdrawBills_menu = {
-            '*': self.abort, '#': self.checkout,'2': functools.partial(self.selectOpt2,n=2),
-            '1': functools.partial(self.selectOpt1,n=1),'3': functools.partial(self.selectOpt3,n=5)
+            '*': self.abort, '#': self.checkout,'2': print("option2"),
+            '1': print("option 1"),'3': print("option 3")
         }
 
         self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
@@ -386,9 +386,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.counter1 = 0
         self.counter2 = 0
         self.counter3 = 0
-        self.ui.amountBillsOpt1.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsOpt2.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsOpt3.setText(f"Aantal geselecteerd: 0")
 
     @pyqtSlot()
     def goHome(self):
@@ -466,9 +463,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
-        self.ui.amountBillsOpt1.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsOpt2.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsOpt3.setText(f"Aantal geselecteerd: 0")
 
         self.dutch()
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
@@ -528,6 +522,30 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     @pyqtSlot()
     def withdrawBillsPage(self,amount):
+        def largest(amount):
+            twenties = int(amount / 20)
+            amount = amount % 20
+            tens = int(amount / 10)
+            amount = amount % 10
+            fives = int(amount / 5)
+            amount = amount % 5
+            return int(twenties/100)
+        def medium(amount):
+            tens = int(amount / 10)
+            amount = amount % 10
+            fives = int(amount / 5)
+            amount = amount % 5
+            return int(tens/100)
+        def smallest(amount):
+            small = int(amount / 5)
+            return int(small/100)
+
+        self.counter3 = largest(amount)
+        self.counter2 = medium(amount)
+        self.counter1 = smallest(amount)
+        # print("largets: ",self.counter3)
+        # print("medium: ",self.counter2)
+        # print("smallest: ",self.counter1)
         self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
         if amount < 500:
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
@@ -538,7 +556,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.setSingleShot(True)
             self.timer.start(2000)
         if amount == 500:
-            self.ui.btnOption1.setText(None)
+            self.ui.btnOption1.setText(f"{self.counter1} x €5 [1]")
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
             self.ui.btnOption2.setEnabled(False)
@@ -554,31 +572,40 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.setSingleShot(True)
             self.timer.start(2000)
         if amount == 1000:
-            self.ui.btnOption1.setText("2 x €5 [1]")
+            self.ui.btnOption1.setText(f"{self.counter1} x €5 [1]")
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
-            self.ui.btnOption2.setText("1 x €10 [2]")
+            self.ui.btnOption2.setText(f"{self.counter2} x €10 [2]")
             self.ui.btnOption2.setEnabled(True)
             self.ui.btnOption2.setVisible(True)
             self.ui.btnOption3.setEnabled(False)
             self.ui.btnOption3.setVisible(False)
+        if (1000 < amount < 1500) or (1500 < amount < 2000):
+            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+            self.ui.resultText.setText(self.tr(f'Geen biljet combinatie mogelijk voor het bedrag van €{int(amount/100)}\n Alleen bedragen die eindigen op 0 of 5'))
+            #goto main page back, insufficient amount
+            self.timer = QTimer()
+            self.timer.timeout.connect(self.abort)
+            self.timer.setSingleShot(True)
+            self.timer.start(3000)
         if amount == 1500:
-            self.ui.btnOption1.setText("3 x €5 [1]")
+            self.ui.btnOption1.setText(f"{self.counter1} x €5 [1]")
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
-            self.ui.btnOption2.setText("1 x €10 [2]\n1 x €5")
-            self.ui.btnOption2.setEnabled(False)
-            self.ui.btnOption2.setVisible(False)
+            self.ui.btnOption2.setText(f"{self.counter2} x €10 [2]")
+            self.ui.btnOption2.setEnabled(True)
+            self.ui.btnOption2.setVisible(True)
+            self.ui.btnOption3.setText(f"{self.counter3} x €20 [3]")
             self.ui.btnOption3.setEnabled(False)
             self.ui.btnOption3.setVisible(False)
         if amount == 2000:
-            self.ui.btnOption1.setText("4 x €5 [1]")
+            self.ui.btnOption1.setText(f"{self.counter1} x €5 [1]")
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
-            self.ui.btnOption2.setText("2 x €10 [2]")
+            self.ui.btnOption2.setText(f"{self.counter2} x €10 [2]")
             self.ui.btnOption2.setEnabled(True)
             self.ui.btnOption2.setVisible(True)
-            self.ui.btnOption3.setText("1 x €20 [3]")
+            self.ui.btnOption3.setText(f"{self.counter3} x €20 [3]")
             self.ui.btnOption3.setEnabled(True)
             self.ui.btnOption3.setVisible(True)
         if amount > 2000 and amount < 5000:
@@ -588,7 +615,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnOption2.setVisible(False)
             self.ui.btnOption3.setEnabled(False)
             self.ui.btnOption3.setVisible(False)
-        if amount >= 5000 and amount <= 10000:
+        if amount == 5000:
             self.ui.btnOption1.setEnabled(True)
             self.ui.btnOption1.setVisible(True)
             self.ui.btnOption2.setEnabled(False)
@@ -604,22 +631,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.btnOption3.setVisible(False)
             
         # TODO implement dispense bills
-
-    @pyqtSlot()
-    def selectOpt1(self,n):
-        self.counter1 = self.counter1 + n
-        self.ui.amountBillsOpt1.setText(f"Aantal geselecteerd: {self.counter1}x")
     
-    @pyqtSlot()
-    def selectOpt2(self,n):
-        self.counter2 = self.counter2 + n
-        self.ui.amountBillsOpt2.setText(f"Aantal geselecteerd: {self.counter2}x")
 
-    @pyqtSlot()
-    def selectOpt3(self,n):
-        self.counter3 = self.counter3 + n
-        self.ui.amountBillsOpt3.setText(f"Aantal geselecteerd: {self.counter3}x")
-    
 
     @pyqtSlot()
     def checkout(self):

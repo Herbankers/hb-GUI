@@ -1222,50 +1222,6 @@ QPushButton:pressed {
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_11"/>
-          </item>
-          <item row="5" column="2">
-           <widget class="QLabel" name="amountBillsOpt2">
-            <property name="font">
-             <font>
-              <family>Helvetica Neue</family>
-              <pointsize>17</pointsize>
-              <weight>25</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Aantal geselecteerd: 0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <layout class="QHBoxLayout" name="horizontalLayout_9"/>
-          </item>
-          <item row="1" column="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_10"/>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="btnOption1">
-            <property name="text">
-             <string>1 x €5 [1]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="2">
-           <spacer name="verticalSpacer_25">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="4" column="3">
            <spacer name="horizontalSpacer_13">
             <property name="orientation">
@@ -1279,33 +1235,11 @@ QPushButton:pressed {
             </property>
            </spacer>
           </item>
-          <item row="4" column="1">
-           <spacer name="horizontalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+          <item row="1" column="4">
+           <layout class="QHBoxLayout" name="horizontalLayout_9"/>
           </item>
-          <item row="5" column="4">
-           <widget class="QLabel" name="amountBillsOpt3">
-            <property name="font">
-             <font>
-              <family>Helvetica Neue</family>
-              <pointsize>17</pointsize>
-              <weight>25</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Aantal geselecteerd: 0</string>
-            </property>
-           </widget>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_11"/>
           </item>
           <item row="4" column="2">
            <widget class="QPushButton" name="btnOption2">
@@ -1327,20 +1261,8 @@ QPushButton:pressed {
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="amountBillsOpt1">
-            <property name="font">
-             <font>
-              <family>Helvetica Neue</family>
-              <pointsize>17</pointsize>
-              <weight>25</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Aantal geselecteerd: 0</string>
-            </property>
-           </widget>
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_10"/>
           </item>
           <item row="3" column="2">
            <spacer name="verticalSpacer_27">
@@ -1354,6 +1276,46 @@ QPushButton:pressed {
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="btnOption1">
+            <property name="text">
+             <string>1 x €5 [1]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <spacer name="verticalSpacer_25">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="1">
+           <spacer name="horizontalSpacer_14">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

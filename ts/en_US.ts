@@ -4,63 +4,63 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="..\gui.py" line="494" />
+      <location filename="..\gui.py" line="490" />
       <location filename="..\gui.py" line="107" />
       <source>Nog een fijne dag!</source>
       <translation>Have a nice day!</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="268" />
-      <location filename="..\gui.py" line="259" />
-      <location filename="..\gui.py" line="209" />
+      <location filename="..\gui.py" line="264" />
+      <location filename="..\gui.py" line="255" />
+      <location filename="..\gui.py" line="205" />
       <source>ï¹¡    Correctie</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="..\gui.py" line="351" />
-      <location filename="..\gui.py" line="337" />
-      <location filename="..\gui.py" line="326" />
+      <location filename="..\gui.py" line="347" />
+      <location filename="..\gui.py" line="333" />
+      <location filename="..\gui.py" line="322" />
       <source>ï¹¡    Afbreken</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="..\gui.py" line="375" />
+      <location filename="..\gui.py" line="371" />
       <source>Welkom</source>
       <translation>Welcome</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="377" />
+      <location filename="..\gui.py" line="373" />
       <source>Welkom!</source>
       <translation>Welcome!</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="379" />
+      <location filename="..\gui.py" line="375" />
       <source>Onjuiste PIN</source>
       <translation>Incorrect PIN</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="381" />
+      <location filename="..\gui.py" line="377" />
       <source>Deze kaart is geblokkeerd</source>
       <translation>This card is blocked</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="508" />
-      <location filename="..\gui.py" line="383" />
+      <location filename="..\gui.py" line="504" />
+      <location filename="..\gui.py" line="379" />
       <source>Een interne fout is opgetreden</source>
       <translation>An internal error has occurred</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="487" />
+      <location filename="..\gui.py" line="483" />
       <source>Een moment geduld...</source>
       <translation>One moment please...</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="498" />
+      <location filename="..\gui.py" line="494" />
       <source>Uw saldo is ontoereikend</source>
       <translation>Your balance is insufficient</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="538" />
+      <location filename="..\gui.py" line="567" />
       <source>Bedrag is te laag om biljetten van op te nemen.</source>
       <translation type="unfinished" />
     </message>
@@ -180,24 +180,17 @@
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
-      <location filename="..\ui\main.ui" line="0" />
-      <location filename="..\ui\main.ui" line="0" />
-      <source>Aantal geselecteerd: 0</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <source>1 x €5 [1]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
       <source>1 x €10 [2]</source>
       <translation type="unfinished" />
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
       <source>1 x €20 [3]</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="..\ui\main.ui" line="0" />
+      <source>1 x €5 [1]</source>
       <translation type="unfinished" />
     </message>
     <message>
