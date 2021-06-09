@@ -4,60 +4,65 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="..\gui.py" line="492" />
+      <location filename="..\gui.py" line="494" />
       <location filename="..\gui.py" line="107" />
       <source>Nog een fijne dag!</source>
       <translation>Have a nice day!</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="266" />
-      <location filename="..\gui.py" line="257" />
-      <location filename="..\gui.py" line="207" />
+      <location filename="..\gui.py" line="268" />
+      <location filename="..\gui.py" line="259" />
+      <location filename="..\gui.py" line="209" />
       <source>ï¹¡    Correctie</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="..\gui.py" line="349" />
-      <location filename="..\gui.py" line="335" />
-      <location filename="..\gui.py" line="324" />
+      <location filename="..\gui.py" line="351" />
+      <location filename="..\gui.py" line="337" />
+      <location filename="..\gui.py" line="326" />
       <source>ï¹¡    Afbreken</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="..\gui.py" line="373" />
+      <location filename="..\gui.py" line="375" />
       <source>Welkom</source>
       <translation>Welcome</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="375" />
+      <location filename="..\gui.py" line="377" />
       <source>Welkom!</source>
       <translation>Welcome!</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="377" />
+      <location filename="..\gui.py" line="379" />
       <source>Onjuiste PIN</source>
       <translation>Incorrect PIN</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="379" />
+      <location filename="..\gui.py" line="381" />
       <source>Deze kaart is geblokkeerd</source>
       <translation>This card is blocked</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="506" />
-      <location filename="..\gui.py" line="381" />
+      <location filename="..\gui.py" line="508" />
+      <location filename="..\gui.py" line="383" />
       <source>Een interne fout is opgetreden</source>
       <translation>An internal error has occurred</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="485" />
+      <location filename="..\gui.py" line="487" />
       <source>Een moment geduld...</source>
       <translation>One moment please...</translation>
     </message>
     <message>
-      <location filename="..\gui.py" line="496" />
+      <location filename="..\gui.py" line="498" />
       <source>Uw saldo is ontoereikend</source>
       <translation>Your balance is insufficient</translation>
+    </message>
+    <message>
+      <location filename="..\gui.py" line="538" />
+      <source>Bedrag is te laag om biljetten van op te nemen.</source>
+      <translation type="unfinished" />
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
@@ -175,7 +180,9 @@
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
-      <source>2 x €20 [8]</source>
+      <location filename="..\ui\main.ui" line="0" />
+      <location filename="..\ui\main.ui" line="0" />
+      <source>Aantal geselecteerd: 0</source>
       <translation type="unfinished" />
     </message>
     <message>
@@ -185,44 +192,12 @@
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
-      <source>1 x €10 [4]</source>
+      <source>1 x €10 [2]</source>
       <translation type="unfinished" />
     </message>
     <message>
       <location filename="..\ui\main.ui" line="0" />
-      <source>5 x €20 [9]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <source>2 x €5 [2]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <source>2 x €10 [5]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <location filename="..\ui\main.ui" line="0" />
-      <location filename="..\ui\main.ui" line="0" />
-      <source>Aantal geselecteerd: 0</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <source>1 x €20 [7]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <source>5 x €5 [3]</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <location filename="..\ui\main.ui" line="0" />
-      <source>5 x €10 [6]</source>
+      <source>1 x €20 [3]</source>
       <translation type="unfinished" />
     </message>
     <message>

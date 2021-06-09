@@ -59,9 +59,9 @@ class MainWindow(QtWidgets.QMainWindow):
     iban = ''
     keybuf = []
     keyindex = 0
-    counter5 = 0
-    counter10 = 0
-    counter20 = 0
+    counter1 = 0
+    counter2 = 0
+    counter3 = 0
 
     translator = QTranslator()
 
@@ -134,12 +134,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Withdraw bill selection page
         self.withdrawBills_menu = {
-            '*': self.abort, '#': self.checkout,
-            '1': functools.partial(self.selectFive,n=1), '2': functools.partial(self.selectFive,n=2),
-            '3': functools.partial(self.selectFive,n=5), '4': functools.partial(self.selectTen,n=1),
-            '5': functools.partial(self.selectTen,n=2), '6': functools.partial(self.selectTen,n=5),
-            '7': functools.partial(self.selectTwenty,n=1), '8': functools.partial(self.selectTwenty,n=2),
-            '9': functools.partial(self.selectTwenty,n=5)
+            '*': self.abort, '#': self.checkout,'2': functools.partial(self.selectOpt2,n=2),
+            '1': functools.partial(self.selectOpt1,n=1),'3': functools.partial(self.selectOpt3,n=5)
         }
 
         self.ui.withdrawBillsAbort.clicked.connect(self.withdrawBills_menu['*'])
@@ -387,12 +383,12 @@ class MainWindow(QtWidgets.QMainWindow):
     @pyqtSlot()
     def abort(self):
         self.ui.stack.setCurrentIndex(self.MAIN_PAGE)
-        self.counter5 = 0
-        self.counter10 = 0
-        self.counter20 = 0
-        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsTen.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsTwenty.setText(f"Aantal geselecteerd: 0")
+        self.counter1 = 0
+        self.counter2 = 0
+        self.counter3 = 0
+        self.ui.amountBillsOpt1.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsOpt2.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsOpt3.setText(f"Aantal geselecteerd: 0")
 
     @pyqtSlot()
     def goHome(self):
@@ -464,15 +460,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # we should clear all modified variables and labels here for security
         self.keybuf = []
         self.keyindex = 0
-        self.counter5 = 0
-        self.counter10 = 0
-        self.counter20 = 0
+        self.counter1 = 0
+        self.counter2 = 0
+        self.counter3 = 0
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
-        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsTen.setText(f"Aantal geselecteerd: 0")
-        self.ui.amountBillsTwenty.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsOpt1.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsOpt2.setText(f"Aantal geselecteerd: 0")
+        self.ui.amountBillsOpt3.setText(f"Aantal geselecteerd: 0")
 
         self.dutch()
         self.ui.stack.setCurrentIndex(self.CARD_PAGE)
@@ -542,22 +538,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.setSingleShot(True)
             self.timer.start(2000)
         if amount == 500:
-            self.ui.btnTwoFive.setEnabled(False)
-            self.ui.btnTwoFive.setVisible(False)
-            self.ui.btnFiveFive.setEnabled(False)
-            self.ui.btnFiveFive.setVisible(False)
-            self.ui.btnOneTen.setEnabled(False)
-            self.ui.btnOneTen.setVisible(False)
-            self.ui.btnTwoTen.setEnabled(False)
-            self.ui.btnTwoTen.setVisible(False)
-            self.ui.btnFiveTen.setEnabled(False)
-            self.ui.btnFiveTen.setVisible(False)
-            self.ui.btnOneTwenty.setEnabled(False)
-            self.ui.btnOneTwenty.setVisible(False)
-            self.ui.btnTwoTwenty.setEnabled(False)
-            self.ui.btnTwoTwenty.setVisible(False)
-            self.ui.btnFiveTwenty.setEnabled(False)
-            self.ui.btnFiveTwenty.setVisible(False)
+            self.ui.btnOption1.setText(None)
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setEnabled(False)
+            self.ui.btnOption2.setVisible(False)
+            self.ui.btnOption3.setEnabled(False)
+            self.ui.btnOption3.setVisible(False)
         if amount > 500 and amount < 1000:
             self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
             self.ui.resultText.setText(self.tr(f'Geen biljet combinatie mogelijk voor het bedrag van €{int(amount/100)}'))
@@ -566,128 +553,82 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.timeout.connect(self.abort)
             self.timer.setSingleShot(True)
             self.timer.start(2000)
-        if amount >= 1000 and amount < 2000:
-            self.ui.btnOneFive.setEnabled(False)
-            self.ui.btnOneFive.setVisible(False)
-            self.ui.btnTwoFive.setEnabled(True)
-            self.ui.btnTwoFive.setVisible(True)
-            self.ui.btnFiveFive.setEnabled(False)
-            self.ui.btnFiveFive.setVisible(False)
-            self.ui.btnOneTen.setEnabled(True)
-            self.ui.btnOneTen.setVisible(True)
-            self.ui.btnTwoTen.setEnabled(False)
-            self.ui.btnTwoTen.setVisible(False)
-            self.ui.btnFiveTen.setEnabled(False)
-            self.ui.btnFiveTen.setVisible(False)
-            self.ui.btnOneTwenty.setEnabled(False)
-            self.ui.btnOneTwenty.setVisible(False)
-            self.ui.btnTwoTwenty.setEnabled(False)
-            self.ui.btnTwoTwenty.setVisible(False)
-            self.ui.btnFiveTwenty.setEnabled(False)
-            self.ui.btnFiveTwenty.setVisible(False)
+        if amount == 1000:
+            self.ui.btnOption1.setText("2 x €5 [1]")
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setText("1 x €10 [2]")
+            self.ui.btnOption2.setEnabled(True)
+            self.ui.btnOption2.setVisible(True)
+            self.ui.btnOption3.setEnabled(False)
+            self.ui.btnOption3.setVisible(False)
+        if amount == 1500:
+            self.ui.btnOption1.setText("3 x €5 [1]")
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setText("1 x €10 [2]\n1 x €5")
+            self.ui.btnOption2.setEnabled(False)
+            self.ui.btnOption2.setVisible(False)
+            self.ui.btnOption3.setEnabled(False)
+            self.ui.btnOption3.setVisible(False)
         if amount == 2000:
-            self.ui.btnOneFive.setEnabled(False)
-            self.ui.btnOneFive.setVisible(False)
-            self.ui.btnTwoFive.setEnabled(True)
-            self.ui.btnTwoFive.setVisible(True)
-            self.ui.btnFiveFive.setEnabled(False)
-            self.ui.btnFiveFive.setVisible(False)
-            self.ui.btnOneTen.setEnabled(False)
-            self.ui.btnOneTen.setVisible(False)
-            self.ui.btnTwoTen.setEnabled(True)
-            self.ui.btnTwoTen.setVisible(True)
-            self.ui.btnFiveTen.setEnabled(False)
-            self.ui.btnFiveTen.setVisible(False)
-            self.ui.btnOneTwenty.setEnabled(True)
-            self.ui.btnOneTwenty.setVisible(True)
-            self.ui.btnTwoTwenty.setEnabled(False)
-            self.ui.btnTwoTwenty.setVisible(False)
-            self.ui.btnFiveTwenty.setEnabled(False)
-            self.ui.btnFiveTwenty.setVisible(False)
-        if amount >= 2000 and amount < 5000:
-            self.ui.btnOneFive.setEnabled(False)
-            self.ui.btnOneFive.setVisible(False)
-            self.ui.btnTwoFive.setEnabled(False)
-            self.ui.btnTwoFive.setVisible(False)
-            self.ui.btnFiveFive.setEnabled(True)
-            self.ui.btnFiveFive.setVisible(True)
-            self.ui.btnOneTen.setEnabled(False)
-            self.ui.btnOneTen.setVisible(False)
-            self.ui.btnTwoTen.setEnabled(True)
-            self.ui.btnTwoTen.setVisible(True)
-            self.ui.btnFiveTen.setEnabled(True)
-            self.ui.btnFiveTen.setVisible(True)
-            self.ui.btnOneTwenty.setEnabled(False)
-            self.ui.btnOneTwenty.setVisible(False)
-            self.ui.btnTwoTwenty.setEnabled(True)
-            self.ui.btnTwoTwenty.setVisible(True)
-            self.ui.btnFiveTwenty.setEnabled(False)
-            self.ui.btnFiveTwenty.setVisible(False)
+            self.ui.btnOption1.setText("4 x €5 [1]")
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setText("2 x €10 [2]")
+            self.ui.btnOption2.setEnabled(True)
+            self.ui.btnOption2.setVisible(True)
+            self.ui.btnOption3.setText("1 x €20 [3]")
+            self.ui.btnOption3.setEnabled(True)
+            self.ui.btnOption3.setVisible(True)
+        if amount > 2000 and amount < 5000:
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setEnabled(False)
+            self.ui.btnOption2.setVisible(False)
+            self.ui.btnOption3.setEnabled(False)
+            self.ui.btnOption3.setVisible(False)
         if amount >= 5000 and amount <= 10000:
-            self.ui.btnOneFive.setEnabled(False)
-            self.ui.btnOneFive.setVisible(False)
-            self.ui.btnTwoFive.setEnabled(False)
-            self.ui.btnTwoFive.setVisible(False)
-            self.ui.btnFiveFive.setEnabled(True)
-            self.ui.btnFiveFive.setVisible(True)
-            self.ui.btnOneTen.setEnabled(False)
-            self.ui.btnOneTen.setVisible(False)
-            self.ui.btnTwoTen.setEnabled(True)
-            self.ui.btnTwoTen.setVisible(True)
-            self.ui.btnFiveTen.setEnabled(False)
-            self.ui.btnFiveTen.setVisible(False)
-            self.ui.btnOneTwenty.setEnabled(True)
-            self.ui.btnOneTwenty.setVisible(True)
-            self.ui.btnTwoTwenty.setEnabled(False)
-            self.ui.btnTwoTwenty.setVisible(False)
-            self.ui.btnFiveTwenty.setEnabled(False)
-            self.ui.btnFiveTwenty.setVisible(False)
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setEnabled(False)
+            self.ui.btnOption2.setVisible(False)
+            self.ui.btnOption3.setEnabled(False)
+            self.ui.btnOption3.setVisible(False)
         if amount > 10000:
-            self.ui.btnOneFive.setEnabled(False)
-            self.ui.btnOneFive.setVisible(False)
-            self.ui.btnTwoFive.setEnabled(False)
-            self.ui.btnTwoFive.setVisible(False)
-            self.ui.btnFiveFive.setEnabled(True)
-            self.ui.btnFiveFive.setVisible(True)
-            self.ui.btnOneTen.setEnabled(False)
-            self.ui.btnOneTen.setVisible(False)
-            self.ui.btnTwoTen.setEnabled(False)
-            self.ui.btnTwoTen.setVisible(False)
-            self.ui.btnFiveTen.setEnabled(True)
-            self.ui.btnFiveTen.setVisible(True)
-            self.ui.btnOneTwenty.setEnabled(False)
-            self.ui.btnOneTwenty.setVisible(False)
-            self.ui.btnTwoTwenty.setEnabled(False)
-            self.ui.btnTwoTwenty.setVisible(False)
-            self.ui.btnFiveTwenty.setEnabled(True)
-            self.ui.btnFiveTwenty.setVisible(True)
+            self.ui.btnOption1.setEnabled(True)
+            self.ui.btnOption1.setVisible(True)
+            self.ui.btnOption2.setEnabled(False)
+            self.ui.btnOption2.setVisible(False)
+            self.ui.btnOption3.setEnabled(False)
+            self.ui.btnOption3.setVisible(False)
             
         # TODO implement dispense bills
 
     @pyqtSlot()
-    def selectFive(self,n):
-        self.counter5 = self.counter5 + n
-        self.ui.amountBillsFive.setText(f"Aantal geselecteerd: {self.counter5}")
+    def selectOpt1(self,n):
+        self.counter1 = self.counter1 + n
+        self.ui.amountBillsOpt1.setText(f"Aantal geselecteerd: {self.counter1}x")
     
     @pyqtSlot()
-    def selectTen(self,n):
-        self.counter10 = self.counter10 + n
-        self.ui.amountBillsTen.setText(f"Aantal geselecteerd: {self.counter10}")
+    def selectOpt2(self,n):
+        self.counter2 = self.counter2 + n
+        self.ui.amountBillsOpt2.setText(f"Aantal geselecteerd: {self.counter2}x")
 
     @pyqtSlot()
-    def selectTwenty(self,n):
-        self.counter20 = self.counter20 + n
-        self.ui.amountBillsTwenty.setText(f"Aantal geselecteerd: {self.counter20}")
+    def selectOpt3(self,n):
+        self.counter3 = self.counter3 + n
+        self.ui.amountBillsOpt3.setText(f"Aantal geselecteerd: {self.counter3}x")
     
 
     @pyqtSlot()
     def checkout(self):
-        a = self.counter5*500
-        b = self.counter10*1000
-        c = self.counter20*2000
+        a = self.counter1*500
+        b = self.counter2*1000
+        c = self.counter3*2000
         print(a,b,c)
         amount = a+b+c
-        sendString = f"{self.counter5},{self.counter10},{self.counter20}\0"
+        sendString = f"{self.counter1},{self.counter2},{self.counter3}\0"
         print(amount)
         # self.withdraw(amount)
         # Send bill selection to arduino
