@@ -381,11 +381,21 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer.setSingleShot(True)
             self.timer.start(700)
         elif page in (self.WITHDRAW_MANUAL_PAGE, self.DONATE_PAGE):
+            # limit the user's input to 100 EUR and divisible by 5
+            if self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
+                if self.keyindex == 0 and key == '0':
+                    return
+                elif self.keyindex == 1 and key not in ('0', '5'):
+                    return
+                elif self.keyindex == 2 and (self.keybuf[0] != '1' or self.keybuf[1] != '0' or key != '0'):
+                    return
+
             # store the keyboard key in the keybuffer
             if self.keyindex > 2:
                 return
             self.keybuf[self.keyindex] = key
             self.keyindex += 1
+
 
             if self.ui.stack.currentIndex() == self.WITHDRAW_MANUAL_PAGE:
                 # change the abort button to a correction button
