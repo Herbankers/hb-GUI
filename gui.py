@@ -626,7 +626,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # start the money dispensing process
             if arduino == None:
-                self.showResult(self.tr('Geld dispenser niet beschikbaar, wel afgeschreven 😈'))
+                self.showResult(self.tr('Geld uitgave niet beschikbaar, wel afgeschreven 😈'))
             else:
                 self.dispenseBills(amount, billmix)
         elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
