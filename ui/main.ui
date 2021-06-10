@@ -59,7 +59,7 @@ QLabel {
 
 #name,
 #withdrawText,
-#withdrawBillsText {
+#withdrawBillSelectText {
 	padding: 48px;
 	font-size: 48px;
 }
@@ -102,7 +102,9 @@ QPushButton:pressed {
 #quickWithdrawal,
 #withdrawOption2,
 #withdrawOption3,
-#withdrawBills {
+#withdrawBillSelectOption0,
+#withdrawBillSelectOption1,
+#withdrawBillSelectOption2 {
 	text-align: right;
 	border-top-left-radius: 8px;
 	border-bottom-left-radius: 8px;
@@ -111,7 +113,7 @@ QPushButton:pressed {
 #loginAbort,
 #withdrawAbort,
 #withdrawManualAbort,
-#withdrawBillsAbort,
+#withdrawBillSelectAbort,
 #donateAbort,
 #confirmNegative {
 	text-align: left;
@@ -164,7 +166,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="cardPage">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1190,7 +1192,7 @@ QPushButton:pressed {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="withdrawBillsPage">
+      <widget class="QWidget" name="withdrawBillSelectPage">
        <layout class="QVBoxLayout" name="verticalLayout_15">
         <property name="spacing">
          <number>0</number>
@@ -1208,7 +1210,7 @@ QPushButton:pressed {
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="withdrawBillsText">
+         <widget class="QLabel" name="withdrawBillSelectText">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -1224,38 +1226,45 @@ QPushButton:pressed {
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer_25">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+         <layout class="QHBoxLayout" name="horizontalLayout_10"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
           <item>
-           <widget class="QPushButton" name="withdrawBillsAbort">
-            <property name="minimumSize">
-             <size>
-              <width>350</width>
-              <height>86</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>350</width>
-              <height>86</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>﹡    Afbreken</string>
-            </property>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_18">
+            <item>
+             <spacer name="verticalSpacer_25">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawBillSelectAbort">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>﹡    Afbreken</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <spacer name="horizontalSpacer_11">
@@ -1269,6 +1278,96 @@ QPushButton:pressed {
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_17">
+            <property name="spacing">
+             <number>32</number>
+            </property>
+            <item>
+             <spacer name="verticalSpacer_30">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawBillSelectOption0">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawBillSelectOption1">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="withdrawBillSelectOption2">
+              <property name="minimumSize">
+               <size>
+                <width>350</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>86</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_29">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>

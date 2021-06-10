@@ -102,16 +102,16 @@ class Arduino(QObject):
 
 class MainWindow(QtWidgets.QMainWindow):
     # Page index numbers
-    CARD_PAGE            = 0
-    LOGIN_PAGE           = 1
-    MAIN_PAGE            = 2
-    WITHDRAW_PAGE        = 3
-    WITHDRAW_MANUAL_PAGE = 4
-    WITHDRAW_BILLS_PAGE  = 5
-    DONATE_PAGE          = 6
-    BALANCE_PAGE         = 7
-    CONFIRM_PAGE         = 8
-    RESULT_PAGE          = 9
+    CARD_PAGE                     = 0
+    LOGIN_PAGE                    = 1
+    MAIN_PAGE                     = 2
+    WITHDRAW_PAGE                 = 3
+    WITHDRAW_MANUAL_PAGE          = 4
+    WITHDRAW_BILL_SELECTION_PAGE  = 5
+    DONATE_PAGE                   = 6
+    BALANCE_PAGE                  = 7
+    CONFIRM_PAGE                  = 8
+    RESULT_PAGE                   = 9
 
     MONOSPACE_HTML = '<font face="Fira Mono, DejaVu Sans Mono, Menlo, Consolas, Liberation Mono, Monaco, Lucida Console, monospace">'
 
@@ -127,6 +127,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     CONFIRM_AMOUNT  = 0
     CONFIRM_RECEIPT = 1
+
+    billOption0 = None
+    billOption1 = None
+    billOption2 = None
 
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -197,7 +201,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawManualAccept.clicked.connect(self.withdrawManual_menu['#'])
 
         # Withdraw bill selection page
-        # TODO
+        self.withdrawBillSelection_menu = {
+                            '3': functools.partial(self.withdrawBillSelection, option=0),
+                            '6': functools.partial(self.withdrawBillSelection, option=1),
+                            '9': functools.partial(self.withdrawBillSelection, option=2),
+            '*': self.abort
+        }
+        self.ui.withdrawBillSelectOption0.clicked.connect(self.withdrawBillSelection_menu['3'])
+        self.ui.withdrawBillSelectOption1.clicked.connect(self.withdrawBillSelection_menu['6'])
+        self.ui.withdrawBillSelectOption2.clicked.connect(self.withdrawBillSelection_menu['9'])
+        self.ui.withdrawBillSelectAbort.clicked.connect(self.withdrawBillSelection_menu['*'])
 
         # Donate page
         self.donate_menu = {
@@ -226,6 +239,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.MAIN_PAGE: self.main_menu,
             self.WITHDRAW_PAGE: self.withdraw_menu,
             self.WITHDRAW_MANUAL_PAGE: self.withdrawManual_menu,
+            self.WITHDRAW_BILL_SELECTION_PAGE: self.withdrawBillSelection_menu,
             self.DONATE_PAGE: self.donate_menu,
             self.BALANCE_PAGE: self.balance_menu,
             self.CONFIRM_PAGE: self.confirm_menu
@@ -591,6 +605,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.withdrawAmount.setText('')
         self.ui.donateAmount.setText('')
         self.ui.balanceAmount.setText('')
+        self.billOption0 = None
+        self.billOption1 = None
+        self.billOption2 = None
         self.receiptAmount = '0'
         self.receiptBillmix = None
 
@@ -620,7 +637,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 remainder -= tens * 10
 
                 fives = math.floor(remainder / 5)
-                remainder -= fives * 5
 
                 billmix = (fives, tens, twenties)
 
@@ -661,17 +677,74 @@ class MainWindow(QtWidgets.QMainWindow):
             # nothing has been entered yet
             return
 
-        self.withdraw(amount)
+        self.withdrawBillSelectionPage(amount)
 
 
     #
     # Withdraw bill selection page
     #
-    @pyqtSlot()
-    def withdrawBillsPage(self):
-        self.ui.stack.setCurrentIndex(self.WITHDRAW_BILLS_PAGE)
+    def withdrawBillSelectionPage(self, amount):
+        # smallest bills
+        if amount >= 1000 and amount <= 5000:
+            fives = math.floor(amount / 500)
 
-        # TODO implement
+            self.billOption0 = (amount, (fives, 0, 0))
+            self.ui.withdrawBillSelectOption0.setText(f'{fives}x€5    3')
+            self.ui.withdrawBillSelectOption0.setVisible(True)
+        else:
+            self.ui.withdrawBillSelectOption0.setVisible(False)
+
+        # standard billmix (largest)
+        remainder = amount / 100
+        billsStr = ''
+
+        twenties = math.floor(remainder / 20)
+        remainder -= twenties * 20
+        if twenties > 0:
+            billsStr += f'{twenties}x€20 '
+
+        tens = math.floor(remainder / 10)
+        remainder -= tens * 10
+        if tens > 0:
+            billsStr += f'{tens}x€10 '
+
+        fives = math.floor(remainder / 5)
+        if fives > 0:
+            billsStr += f'{fives}x€5 '
+
+        self.billOption1 = (amount, (fives, tens, twenties))
+        self.ui.withdrawBillSelectOption1.setText(f'{billsStr}   6')
+
+        # use mostly 10 EUR bills
+        if amount >= 2000:
+            remainder = amount / 100
+            billsStr = ''
+
+            tens = math.floor(remainder / 10)
+            remainder -= tens * 10
+            if tens > 0:
+                billsStr += f'{tens}x€10 '
+
+            fives = math.floor(remainder / 5)
+            remainder -= fives * 5
+            if fives > 0:
+                billsStr += f'{fives}x€5 '
+
+            self.billOption2 = (amount, (fives, tens, twenties))
+            self.ui.withdrawBillSelectOption2.setText(f'{billsStr}   9')
+            self.ui.withdrawBillSelectOption2.setVisible(True)
+        else:
+            self.ui.withdrawBillSelectOption2.setVisible(False)
+
+        self.ui.stack.setCurrentIndex(self.WITHDRAW_BILL_SELECTION_PAGE)
+
+    def withdrawBillSelection(self, option):
+        if option == 0 and self.billOption0 != None:
+            self.withdraw(*self.billOption0)
+        elif option == 1 and self.billOption1 != None:
+            self.withdraw(*self.billOption1)
+        elif option == 2 and self.billOption2 != None:
+            self.withdraw(*self.billOption2)
 
 
     #
