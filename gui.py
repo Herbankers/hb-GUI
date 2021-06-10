@@ -327,7 +327,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if page == self.CARD_PAGE:
             if key == '*':
                 self.card_id = 'EBA8001B'
-                self.iban = 'NL35HERB2932749274'
+                self.iban = 'CD35HERB2932749274'
 
                 self.ui.pinText.setGraphicsEffect(None)
                 self.ui.loginAbort.setGraphicsEffect(None)
@@ -762,13 +762,34 @@ class MainWindow(QtWidgets.QMainWindow):
     #
     @pyqtSlot()
     def donate(self):
-        # TODO implement
-        self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
-        self.ui.resultText.setText('Nog niet geïmplementeerd')
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.abort)
-        self.timer.setSingleShot(True)
-        self.timer.start(2000)
+        try:
+            amount = int(''.join(self.keybuf).replace(' ', '')) * 100
+        except ValueError:
+            # nothing has been entered yet
+            return
+
+        reply = hbp.transfer('CD28HERB3849283371', amount);
+
+        if reply in (hbp.HBP_TRANSFER_SUCCESS, hbp.HBP_TRANSFER_PROCESSING):
+            self.ui.stack.setCurrentIndex(self.RESULT_PAGE)
+            self.ui.resultText.setText(self.tr('Bedankt voor uw donatie!'))
+            self.timer = QTimer()
+            self.timer.timeout.connect(self.abort)
+            self.timer.setSingleShot(True)
+            self.timer.start(3000)
+        elif reply == hbp.HBP_TRANSFER_INSUFFICIENT_FUNDS:
+            self.ui.resultText.setText(self.tr('Uw saldo is ontoereikend'))
+
+            self.timer = QTimer()
+            self.timer.timeout.connect(self.abort)
+            self.timer.setSingleShot(True)
+            self.timer.start(3000)
+        elif reply == hbp.HBP_REP_TERMINATED:
+            # server side session has expired
+            self.logout(doServerLogout=False)
+        else:
+            self.showResult(self.tr('Een interne fout is opgetreden'))
+            print(reply)
 
 
     #
